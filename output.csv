@@ -1,0 +1,6 @@
+Model,Coherence,Diversity,Latency (s),Score,Ranks
+facebook/blenderbot-400M-distill,0.72,25.4,1.12,0.688845811391102,3
+microsoft/DialoGPT-medium,0.68,23.8,0.95,0.7059735651039174,2
+t5-small,0.74,26.1,0.85,0.8070589084521093,1
+EleutherAI/gpt-neo-1.3B,0.81,28.9,1.75,0.3586792267749206,4
+HuggingFaceH4/zephyr-7b,0.85,30.2,2.1,0.2725793512171262,5
