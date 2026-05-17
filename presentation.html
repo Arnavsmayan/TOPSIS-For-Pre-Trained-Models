@@ -213,11 +213,21 @@ html, body {
 .s2-img img {
   width: 100%;
   height: auto;
-  max-height: 45vh;
+  max-height: 28vh;
   object-fit: contain;
   border-radius: 3px;
   border: 1px solid #eee;
   background: #fafafa;
+}
+
+.s2-img-duo {
+  display: flex;
+  gap: 0.5em;
+}
+
+.s2-img-duo img {
+  width: 50%;
+  max-height: 24vh;
 }
 
 /* Nav */
@@ -330,8 +340,9 @@ html, body {
           <span class="s2-chip">ROC-AUC 92.1%</span>
         </div>
 
-        <div class="s2-img">
-          <img src="imvip_1.png" alt="SHAP feature importance">
+        <div class="s2-img s2-img-duo">
+          <img src="imvip_1.png" alt="Feature importance">
+          <img src="imvip_2.png" alt="SHAP force plot">
         </div>
       </div>
 
