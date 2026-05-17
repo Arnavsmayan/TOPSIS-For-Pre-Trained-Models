@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arnav Jain — Research Introduction</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: #e0e0e0;
+  font-family: 'DM Sans', sans-serif;
+  color: #1a1a1a;
+}
+
+.deck {
+  width: 100%; height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.slide {
+  position: absolute;
+  width: min(94vw, calc(92vh * 1.414));
+  height: min(66.5vw, 92vh);
+  max-width: 1280px;
+  max-height: 905px;
+  background: #fff;
+  box-shadow: 0 1px 12px rgba(0,0,0,0.07);
+  padding: 4% 5.5%;
+  opacity: 0;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  transition: opacity 0.35s ease;
+}
+
+.slide.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ===== SLIDE 1 ===== */
+.s1-name {
+  font-family: 'Libre Baskerville', serif;
+  font-size: clamp(3rem, 4.8vw, 4.4rem);
+  font-weight: 700;
+  color: #111;
+}
+
+.s1-affiliation {
+  font-size: clamp(1.1rem, 1.45vw, 1.35rem);
+  color: #555;
+  margin-top: 0.3em;
+}
+
+.s1-columbia {
+  font-size: clamp(1rem, 1.25vw, 1.15rem);
+  color: #1a5cb0;
+  font-weight: 600;
+  margin-top: 0.25em;
+}
+
+.s1-divider {
+  width: 40px;
+  height: 3px;
+  background: #1a5cb0;
+  margin: 2.5% 0;
+}
+
+.s1-body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 6%;
+  align-items: start;
+}
+
+.s1-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  color: #999;
+  font-weight: 700;
+  margin-bottom: 0.5em;
+}
+
+.s1-section {
+  margin-bottom: 1.6em;
+}
+
+.s1-papers {
+  font-size: clamp(1.1rem, 1.35vw, 1.25rem);
+  color: #444;
+  line-height: 1.7;
+}
+
+.s1-papers strong { color: #111; }
+
+.s1-profs {
+  font-size: clamp(1.05rem, 1.25vw, 1.15rem);
+  color: #444;
+  line-height: 1.8;
+}
+
+.s1-profs .prof-name { font-weight: 600; color: #222; }
+.s1-profs .prof-role { color: #777; font-size: 0.88em; }
+
+.s1-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+}
+
+.s1-skill {
+  padding: 0.4em 0.95em;
+  background: #f4f6f9;
+  border: 1px solid #e8e8e8;
+  border-radius: 3px;
+  font-size: clamp(0.95rem, 1.1vw, 1.05rem);
+  font-weight: 500;
+  color: #333;
+}
+
+/* ===== SLIDE 2 ===== */
+.s2-title {
+  font-family: 'Libre Baskerville', serif;
+  font-size: clamp(1.8rem, 2.8vw, 2.6rem);
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 2.5%;
+}
+
+.s2-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5%;
+  flex: 1;
+}
+
+.s2-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.s2-venue {
+  font-size: clamp(0.72rem, 0.88vw, 0.82rem);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #999;
+  font-weight: 600;
+  margin-bottom: 0.3em;
+}
+
+.s2-card-title {
+  font-size: clamp(1.1rem, 1.4vw, 1.3rem);
+  font-weight: 700;
+  color: #111;
+  line-height: 1.3;
+  margin-bottom: 0.8em;
+}
+
+.s2-item {
+  margin-bottom: 0.5em;
+}
+
+.s2-item-label {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #999;
+  font-weight: 700;
+}
+
+.s2-item-text {
+  font-size: clamp(0.95rem, 1.15vw, 1.08rem);
+  color: #444;
+  line-height: 1.5;
+}
+
+.s2-item-text strong { color: #222; }
+
+.s2-results {
+  display: flex;
+  gap: 0.5em;
+  flex-wrap: wrap;
+  margin: 0.5em 0;
+}
+
+.s2-chip {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(0.78rem, 0.95vw, 0.9rem);
+  padding: 0.3em 0.7em;
+  border-radius: 3px;
+  font-weight: 500;
+}
+
+.cancer .s2-chip { background: #eef4fd; color: #1a5cb0; }
+.heart .s2-chip { background: #fef3e8; color: #b84d00; }
+
+.s2-img {
+  margin-top: auto;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.s2-img img {
+  width: 100%;
+  height: auto;
+  max-height: 320px;
+  object-fit: contain;
+  border-radius: 3px;
+  border: 1px solid #eee;
+  background: #fafafa;
+}
+
+/* Nav */
+.nav-bar {
+  position: fixed;
+  bottom: 2vh;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.nav-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #ccc;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.nav-dot.active { background: #1a5cb0; }
+
+.nav-counter {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  color: #aaa;
+  margin-left: 0.4rem;
+}
+</style>
+</head>
+<body>
+<div class="deck">
+
+  <!-- SLIDE 1 -->
+  <div class="slide active">
+    <h1 class="s1-name">Arnav Jain</h1>
+    <p class="s1-affiliation">Thapar University, Patiala</p>
+    <p class="s1-columbia">Incoming MS in Data Science, Columbia University</p>
+    <div class="s1-divider"></div>
+
+    <div class="s1-body">
+      <div>
+        <div class="s1-section">
+          <div class="s1-label">Research Background</div>
+          <p class="s1-papers">
+            <strong>6 publications</strong> across Medical AI, NLP, Computer Vision, and Multimodal Learning.<br>
+            + 1 paper under publishing at IMVIP (cardiovascular disease prediction).
+          </p>
+        </div>
+
+        <div class="s1-section">
+          <div class="s1-label">Collaborated With</div>
+          <div class="s1-profs">
+            <span class="prof-name">Dr. Seema Wazarkar</span> <span class="prof-role">(Assistant Professor, Thapar University)</span><br>
+            <span class="prof-name">Dr. Prashant Singh Rana</span> <span class="prof-role">(Associate Professor, Thapar University)</span><br>
+            <span class="prof-name">Dr. Muskaan Singh</span> <span class="prof-role">(Lecturer, Ulster University)</span><br>
+            <span class="prof-name">Dr. Simranjit Kaur</span> <span class="prof-role">(Assistant Professor, Thapar University)</span><br>
+            <span class="prof-name">Dr. Sachin Kansal</span> <span class="prof-role">(Professor, Thapar University)</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="s1-section">
+          <div class="s1-label">Skills</div>
+          <div class="s1-skills">
+            <span class="s1-skill">Python</span>
+            <span class="s1-skill">PyTorch</span>
+            <span class="s1-skill">TensorFlow</span>
+            <span class="s1-skill">Scikit-learn</span>
+            <span class="s1-skill">SHAP / XAI</span>
+            <span class="s1-skill">CNNs</span>
+            <span class="s1-skill">Transformers</span>
+            <span class="s1-skill">NLP</span>
+            <span class="s1-skill">Medical Imaging</span>
+            <span class="s1-skill">Data Analysis</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2 -->
+  <div class="slide">
+    <h2 class="s2-title">Selected Research</h2>
+
+    <div class="s2-grid">
+      <div class="s2-card heart">
+        <div class="s2-venue">IMVIP 2025</div>
+        <div class="s2-card-title">Heart Disease Prediction for Elderly via Explainable AI</div>
+
+        <div class="s2-item">
+          <div class="s2-item-label">Problem</div>
+          <p class="s2-item-text">CVD is leading mortality cause in elderly — traditional risk models miss age-specific comorbidities</p>
+        </div>
+
+        <div class="s2-item">
+          <div class="s2-item-label">Solution</div>
+          <p class="s2-item-text">Ensemble ML (<strong>RF, SVM, LR, DT</strong>) with <strong>SHAP</strong> for interpretable age-specific risk prediction</p>
+        </div>
+
+        <div class="s2-item">
+          <div class="s2-item-label">Novelty</div>
+          <p class="s2-item-text">Age-specific cardiovascular risk factors via SHAP — personalized assistive framework for elderly care</p>
+        </div>
+
+        <div class="s2-results">
+          <span class="s2-chip">RF Acc 89.13%</span>
+          <span class="s2-chip">ROC-AUC 92.1%</span>
+        </div>
+
+        <div class="s2-img">
+          <img src="imvip_1.png" alt="SHAP feature importance">
+        </div>
+      </div>
+
+      <div class="s2-card cancer">
+        <div class="s2-venue">Journal of Thermal Biology · 2026</div>
+        <div class="s2-card-title">Breast Cancer Detection via Thermal Imaging & XAI</div>
+
+        <div class="s2-item">
+          <div class="s2-item-label">Problem</div>
+          <p class="s2-item-text">Mammography fails in dense tissue, involves radiation — no interpretable complementary screening exists</p>
+        </div>
+
+        <div class="s2-item">
+          <div class="s2-item-label">Solution</div>
+          <p class="s2-item-text">Fine-tuned <strong>VGG16</strong> on thermal imaging with quadrant segmentation + <strong>SHAP</strong> pixel attribution</p>
+        </div>
+
+        <div class="s2-item">
+          <div class="s2-item-label">Novelty</div>
+          <p class="s2-item-text">First quadrant-wise thermal analysis with pixel-level XAI — clinicians can validate AI reasoning</p>
+        </div>
+
+        <div class="s2-results">
+          <span class="s2-chip">Acc 92.7%</span>
+          <span class="s2-chip">AUROC 99.63%</span>
+          <span class="s2-chip">F1 91.73%</span>
+        </div>
+
+        <div class="s2-img">
+          <img src="thermal_shap.png" alt="Thermal SHAP overlay">
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="nav-bar">
+  <div class="nav-dot active" data-slide="0"></div>
+  <div class="nav-dot" data-slide="1"></div>
+  <span class="nav-counter">1 / 2</span>
+</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const dots = document.querySelectorAll('.nav-dot');
+const counter = document.querySelector('.nav-counter');
+let current = 0;
+
+function goTo(i) {
+  if (i < 0 || i >= slides.length || i === current) return;
+  slides[current].classList.remove('active');
+  current = i;
+  slides[current].classList.add('active');
+  dots.forEach((d, idx) => d.classList.toggle('active', idx === current));
+  counter.textContent = `${current + 1} / 2`;
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goTo(current + 1); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(current - 1); }
+  if (e.key.toLowerCase() === 'f') {
+    document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+  }
+});
+
+dots.forEach(d => d.addEventListener('click', () => goTo(+d.dataset.slide)));
+</script>
+</body>
+</html>
