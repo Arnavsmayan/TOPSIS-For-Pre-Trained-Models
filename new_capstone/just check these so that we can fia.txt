@@ -1,0 +1,17 @@
+[6:10 pm, 30/05/2026] Simranjeet Ai Prof tiet: Hi
+[6:10 pm, 30/05/2026] Simranjeet Ai Prof tiet: Arnav, work on following comments
+[6:11 pm, 30/05/2026] Simranjeet Ai Prof tiet: Make title more specific and impressive
+[6:16 pm, 30/05/2026] Simranjeet Ai Prof tiet: remove blank space above and below section E
+[6:18 pm, 30/05/2026] Simranjeet Ai Prof tiet: add table of comparison with past studies on same datasets
+[6:18 pm, 30/05/2026] Simranjeet Ai Prof tiet: including unimodal and multimodal
+[6:25 pm, 30/05/2026] Simranjeet Ai Prof tiet: add full form of t-SNE and
+PCA in abstract
+[6:33 pm, 30/05/2026] Simranjeet Ai Prof tiet: add reference of DMR and CBIS-DDSM dataset in introduction section
+Before this paragraph, add 5-6 lines about role of deep learning models in mammograms and thermal imaging analysis and classification. How DL models helpful in early detection that radiologists cant detect through visual inspection
+[6:39 pm, 30/05/2026] Simranjeet Ai Prof tiet: report accuracy also and class labels
+[6:41 pm, 30/05/2026] Simranjeet Ai Prof tiet: In introduction, mention about need of explainability
+[6:41 pm, 30/05/2026] Simranjeet Ai Prof tiet: add more papers related to DL and mammography in literature section
+[6:43 pm, 30/05/2026] Simranjeet Ai Prof tiet: discuss accuracy and class labels of each paper mentioned in literature
+[6:46 pm, 30/05/2026] Simranjeet Ai Prof tiet: Mention Reason for  applying ResNet50 for mammograms and MobileNetV2 for thermogram
+[6:49 pm, 30/05/2026] Simranjeet Ai Prof tiet: specify reason for choosing only subset of images from each dataset
+[7:03 pm, 30/05/2026] Simranjeet Ai Prof tiet: AI Plag is 71%. reduce it
