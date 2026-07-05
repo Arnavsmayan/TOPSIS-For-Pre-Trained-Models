@@ -14,14 +14,13 @@ citecolor=blue}
 \usepackage[pagewise]{lineno}
 \usepackage{float}
 \usepackage{subcaption}
-% -------- Revision markup for reviewer traceability --------
-% Uses coloured text (goldenrod, a yellow-tinted colour) rather than \hl{}
-% background highlighting because soul's \hl{} is unreliable with inline
-% math ($...$) and \cite{} inside its argument. Colour-based markup is
-% robust against math, citations, and \ref{}, and remains visually
-% distinct from body text for reviewer tracking.
-\definecolor{revhi}{HTML}{B8860B}       % dark goldenrod, prints legibly on white
-\newcommand{\yh}[1]{{\color{revhi}#1}}  % wrap all revision-added text for review
+% -------- Clean version: revision markers stripped --------
+% \yh{...} is defined as a transparent pass-through so all reviewer-driven
+% edits render as normal body text (no colour, no highlight). Use this
+% file for camera-ready / final submission after the revisions are
+% accepted; the highlighted sibling (main_highlighted.tex) keeps the same
+% content but shows those same edits with a yellow background.
+\newcommand{\yh}[1]{#1}
 \linenumbers
 
 \yil{}

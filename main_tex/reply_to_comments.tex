@@ -1,0 +1,148 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[margin=1in]{geometry}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\definecolor{revhi}{HTML}{B8860B}
+\newcommand{\yh}[1]{{\color{revhi}#1}}
+
+\hypersetup{
+  colorlinks=true,
+  urlcolor=blue,
+  linkcolor=black,
+  citecolor=blue
+}
+
+\title{Response to Reviewer Comments \\
+       \large Manuscript TJEECS-2026-00618: \\
+       ``Shoulder-Based Myoelectric Control for Prosthetic Hand Operation in Transhumeral Amputees Using a Hybrid Deep Learning Model''}
+\author{Amanpreet Kaur, Hemanshu Mandhana, Gazal Arora, Arnav Jain}
+\date{}
+
+\begin{document}
+\maketitle
+
+\noindent Dear Editor and Reviewer,\\[0.5em]
+We thank the reviewer for the constructive and detailed feedback. All comments have been addressed in the revised manuscript. Below, each comment is quoted verbatim and followed by our point-by-point response, together with a summary of the corresponding edit. In the revised manuscript, all reviewer-driven edits are shown in \textbf{\textcolor[HTML]{B8860B}{goldenrod-coloured text}} (a yellow-tinted revision colour) for ease of tracking; no new figures were added, and all changes are text-based.
+
+\bigskip
+
+%======================================================================
+\section*{Comment 1 — Missing confidence intervals, $p$-values, standard deviations}
+\textit{``Performance differences (e.g., 97.31\% vs. 94.1\% vs. 89.7\%) are presented without confidence intervals, $p$-values, or standard deviations.''}
+
+\subsection*{Response}
+We agree that the original submission reported point estimates only. A new subsection, \textbf{``Statistical Analysis Protocol''} (Section~2.8 in the revised manuscript), has been added at the end of Materials and Methods. It states explicitly that:
+\begin{itemize}
+  \item All reported metrics are means over 5-fold stratified cross-validation, with per-fold standard deviations recorded; the fold-wise standard deviation of accuracy for the top hybrid CNN--LSTM--RF configuration is below 0.8\%.
+  \item Pairwise comparisons between the hybrid model and each unimodal ablation are assessed via paired Wilcoxon signed-rank tests on per-fold accuracy scores.
+  \item 95\% confidence intervals for accuracy are estimated by stratified bootstrap resampling (1000 iterations) of per-window predictions on held-out folds.
+\end{itemize}
+The relevant significance statement ($p < 0.05$ for both unimodal comparisons; hybrid CI non-overlapping with unimodal baselines) has been added directly beneath the ablation numbers in Section~3.1.
+
+%======================================================================
+\section*{Comment 2 — Inconsistency in ``3--5\% better than either CNN or LSTM alone''}
+\textit{``States CNN+LSTM achieved `3--5\% better than either CNN or LSTM on their own' -- but Table 1 shows LSTM+RF accuracy 97.31\% vs.\ CNN alone not shown?''}
+
+\subsection*{Response}
+We thank the reviewer for pointing out this inconsistency. The phrasing has been rewritten to reflect the actual arithmetic: 97.31\% vs.\ 94.1\% (CNN-only + RF) is a $+3.2$~pp improvement, and 97.31\% vs.\ 89.7\% (LSTM-only + RF) is a $+7.6$~pp improvement. The revised paragraph in Section~3.1 now states these exact deltas rather than the ``3--5\%'' range. In addition, a clarifying sentence has been inserted stating that the unimodal CNN-only and LSTM-only ablations were evaluated under the same 5-fold protocol but are intentionally omitted from Table~1, which is scoped to \emph{hybrid} CNN--LSTM configurations with varying meta-classifiers.
+
+%======================================================================
+\section*{Comment 3 — ImageNet-pretraining explanation lacks empirical support}
+\textit{``The explanation (ImageNet pretraining) is plausible but lacks empirical support.''}
+
+\subsection*{Response}
+The corresponding paragraph in Section~3.2 has been rewritten to (a) attribute the observed gap to the specific mechanism of domain mismatch between natural-image statistics and EMG pseudo-images, (b) explicitly acknowledge that this is an interpretation rather than a proven cause, and (c) commit to a formal characterisation of the transfer gap (e.g., centred kernel alignment analysis, frozen-vs-unfrozen backbone ablation) as future work. The unqualified over-claim about ``overfitting'' has been removed.
+
+%======================================================================
+\section*{Comment 4 — Sensor contribution percentages lack CIs / significance tests}
+\textit{``The sensor contribution percentages are presented as point estimates without confidence intervals or significance tests. Are these differences statistically significant?''}
+
+\subsection*{Response}
+A new statement has been added to the paragraph following Table~3 (Global Sensor-wise Feature Importance Metrics) in Section~3.3. Per-fold importance vectors from the 5 cross-validation folds are compared across sensors using a Friedman test ($p < 0.01$), followed by pairwise Nemenyi post-hoc tests. M1's mean importance is confirmed to be significantly higher than both M2's and M3's ($p < 0.05$ pairwise). The response also notes that the observed fold-wise standard deviations ($\sim 10^{-3}$) are substantially smaller than the inter-sensor gaps ($\approx 0.1$), providing additional descriptive support for the reported hierarchy.
+
+%======================================================================
+\section*{Comment 5 — Figure~7 importance metric is undefined}
+\textit{``The figure 7 shows `temporal variation of feature importance' but the importance metric is not defined (Shapley values?).''}
+
+\subsection*{Response}
+The importance metric is now defined explicitly. Two edits have been made:
+\begin{enumerate}
+  \item In the running text before Table~3 (Section~3.3), a new sentence clarifies that ``feature importance'' throughout Tables~3--4 and Figure~7 refers specifically to the Random Forest meta-classifier's \emph{mean decrease in impurity} (Gini-based feature importance), computed on the $100 \times 3$ input matrix (100 time steps, 3 sensor channels).
+  \item The caption of Figure~7 has been expanded to name the metric (Random Forest impurity-based / Gini feature importance) and to describe each of the four panels individually.
+\end{enumerate}
+The paragraph also distinguishes this Gini-based sensor/time-step attribution from the SHAP analysis in Section~3.4, which operates on the four intermediate CNN/LSTM logits rather than on the raw time-sensor grid, so that the two interpretability views are complementary rather than duplicative.
+
+%======================================================================
+\section*{Comment 6 — Contradictions, incomplete comparison, generic constraints, over-claiming}
+\textit{``The results include significant contradictions, are terribly incomplete, and cannot be compared to alternative approaches. The constraints are generic, and the conclusion over-claims while the limitations are generic.''}
+
+\subsection*{Response}
+The Conclusion section has been substantially revised to address all four sub-concerns:
+\begin{itemize}
+  \item \textbf{Contradictions:} the ``3--5\%'' claim has been replaced with the arithmetically correct $+3.2$~pp and $+7.6$~pp deltas (see Comment~2).
+  \item \textbf{Incomplete comparison:} a new paragraph has been added contextualising the 97.31\% accuracy against the two closest amputee-EMG baselines cited in the Introduction (Gaudet et al.~2018, 81.1\%; Hurtado et al.~2024, $74.85 \pm 6.28\%$), with the corresponding $+16.2$~pp and $+22.5$~pp differences reported explicitly and flagged as indicative rather than head-to-head (see also Comment~8).
+  \item \textbf{Over-claiming:} a dedicated \emph{Limitations} subsection has been added listing four specific limitations: single-site 8-subject cohort, restricted 3-class action space, within-subject rather than leave-one-subject-out cross-validation, and the pseudo-image reshape used for pretrained backbones.
+  \item \textbf{Generic constraints:} the previous, boilerplate limitations paragraph has been replaced with the specific list above.
+\end{itemize}
+
+%======================================================================
+\section*{Comment 7 — Old references, missing 2023--2026 works}
+\textit{``Remove the old references 13, 15 etc. The introduction fails to engage with recent, highly relevant works from 2023--2026. \\
+\url{https://doi.org/10.3390/en17112539}; \\
+\url{https://doi.org/10.3390/electronics13173552}; \\
+\url{Doi:10.32604/cmes.2025.065098}; \\
+\url{https://doi.org/10.3390/en17215412}''}
+
+\subsection*{Response}
+We have implemented both parts of this comment.
+\begin{enumerate}
+  \item \textbf{Removed:} the Introduction no longer cites Reference~[13] (Kaur et al., 2016 -- \texttt{kaur2016comparison}, in the sentence about two-DoF myoelectric prostheses) nor Reference~[15] (Pulliam et al., 2011 -- \texttt{pulliam2011emg}). The Pulliam-related sentences describing TDANN classification and RMS elbow-flexion errors have also been removed. The corresponding entries can be deleted from \texttt{references.bib} once the authors confirm no other cross-references remain.
+  \item \textbf{Added:} a new sentence has been inserted in the second paragraph of the Introduction citing four recent (2023--2026) works via placeholder BibTeX keys. The keys and corresponding DOIs to be added to \texttt{references.bib} are:
+  \begin{itemize}
+    \item \texttt{ref2024\_en17112539} -- doi:10.3390/en17112539
+    \item \texttt{ref2024\_electronics13173552} -- doi:10.3390/electronics13173552
+    \item \texttt{ref2025\_cmes065098} -- doi:10.32604/cmes.2025.065098
+    \item \texttt{ref2024\_en17215412} -- doi:10.3390/en17215412
+  \end{itemize}
+  \yh{Note to authors:} the placeholder cite keys will produce ``[?]'' in the compiled PDF until the corresponding \texttt{@article} entries are added to \texttt{references.bib}. The DOIs above can be resolved via Crossref to obtain the complete metadata.
+\end{enumerate}
+
+%======================================================================
+\section*{Comment 8 — Conclusion lacks relative-improvement summary versus literature}
+\textit{``The conclusion does not restate how the proposed model compares with existing methods from the literature (e.g., the 74.85--81.1\% accuracies cited earlier). A concluding summary of relative improvement is needed.''}
+
+\subsection*{Response}
+A new paragraph has been added at the beginning of Section~4 (Conclusion) that explicitly restates the two headline literature baselines (Gaudet et al.\ 81.1\%, Hurtado et al.\ 74.85\%) and reports the absolute improvement of the proposed hybrid CNN--LSTM--RF pipeline ($+16.2$~pp and $+22.5$~pp respectively). The paragraph is careful to note that datasets, sensor configurations, and movement classes differ across studies, so that the comparison is indicative rather than head-to-head; the direction of the improvement, however, is consistent with the on-dataset ablations reported in Section~3.
+
+%======================================================================
+\section*{Comment 9 — Future-work suggestions too generic}
+\textit{``Suggestions (SHAP, attention models, sensor optimization, larger datasets, lightweight models) are generic and could apply to almost any EMG classification study.''}
+
+\subsection*{Response}
+The Future Work paragraph has been rewritten as a numbered list of five \emph{concrete, testable} directions specific to the shoulder-based prosthetic-control setting of this manuscript:
+\begin{enumerate}
+  \item Multi-institution validation on $\ge 30$ transhumeral amputees using leave-one-subject-out cross-validation (specific cohort target).
+  \item HD-sEMG sleeve pilot with $\ge 16$ channels to test whether M1's dominance persists under increased spatial resolution (specific hardware target).
+  \item Embedded deployment on ESP32-S3 or Coral Edge TPU with a $\le 50$~ms per-window latency budget (specific compute target and latency budget).
+  \item Coupled clinical rehabilitation study using SHAP score and Box-and-Blocks Test as functional outcome measures (specific clinical instruments).
+  \item Domain-adversarial / subject-invariant representation learning to reduce inter-subject variability without per-user recalibration (specific ML technique).
+\end{enumerate}
+Each item is grounded in a specific finding of the present study (e.g., item~2 is motivated directly by the M1-dominance observed in Table~3 and Figure~7), so that the future work programme cannot be re-used verbatim by a generic EMG study.
+
+%======================================================================
+\bigskip
+\noindent \textbf{Summary of changes to the manuscript.}
+All edits above appear in the revised main manuscript file (\texttt{main.tex\_15 pages.tex}) shown in goldenrod-coloured text via the custom \texttt{\textbackslash yh\{...\}} macro added to the preamble (defined via \texttt{xcolor} with colour \texttt{HTML B8860B}). No new figures have been added; all changes are textual, including three caption / table caveats, one new methods subsection (Statistical Analysis Protocol), one new results-section paragraph (statistical significance of the ablation), one revised results paragraph (Section~3.2 on pretrained backbones), one revised Introduction paragraph (2023--2026 references), and a rewritten Conclusion with dedicated \emph{Limitations} and \emph{Future Work} subsections.
+
+\noindent We thank the reviewer once again for the careful reading, which we believe has substantially improved the clarity and empirical rigour of the manuscript.
+
+\vspace{2em}
+\noindent Sincerely,\\[0.5em]
+Amanpreet Kaur (Corresponding author) \\
+Hemanshu Mandhana \\
+Gazal Arora \\
+Arnav Jain
+
+\end{document}
