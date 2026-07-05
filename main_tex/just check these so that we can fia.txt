@@ -1,0 +1,9 @@
+just check these so that we can fianlized in next week whn you get time ....1. Performance differences (e.g., 97.31% vs. 94.1% vs. 89.7%) are presented without confidence intervals, p‑values, or standard deviations.
+2. States CNN+LSTM achieved “3–5% better than either CNN or LSTM on their own” – but Table 1 shows LSTM+RF accuracy 97.31% vs. CNN alone not shown?
+3. The explanation (ImageNet pretraining) is plausible but lacks empirical support.
+4. The sensor contribution percentages are presented as point estimates without confidence intervals or significance tests. Are these differences statistically significant?
+5. The figure 7 shows “temporal variation of feature importance” but the importance metric is not defined (Shapley values?
+6. The results include significant contradictions, are terribly incomplete, and cannot be compared to alternative approaches. The constraints are generic, and the conclusion over claims while the limitations are generic.
+7. Remove the old references 13,15 etc. The introduction fails to engage with recent, highly relevant works from 2023–2026. https://doi.org/10.3390/en17112539; https://doi.org/10.3390/electronics13173552; Doi:10.32604/cmes.2025.065098; https://doi.org/10.3390/en17215412
+8. The conclusion does not restate how the proposed model compares with existing methods from the literature (e.g., the 74.85–81.1% accuracies cited earlier). A concluding summary of relative improvement is needed.
+9. Suggestions (SHAP, attention models, sensor optimization, larger datasets, lightweight models) are generic and could apply to almost any EMG classification study
