@@ -12,7 +12,6 @@ citecolor=blue}
 \usepackage{cleveref,multirow}
 \usepackage[dvipsnames]{xcolor}
 \usepackage[pagewise]{lineno}
-\usepackage{graphicx}
 \usepackage{float}
 \usepackage{subcaption}
 \linenumbers
@@ -24,13 +23,14 @@ citecolor=blue}
 \doi{}
 
 \title{
-	Shoulder-Based Myoelectric Control for Prosthetic Hand Operation in Transhumeral Amputees Using a Hybrid Deep Learning Model }\\
-\author[AUTHOR and AUTHOR]{
-	\textbf{Amanpreet KAUR$^{1,}$\thanks{aman.preet@thapar.edu}~, Hemanshu MANDHANA$^{2,}$,Gazal ARORA $^{3,}$, Arnav JAIN$^{4,}$}\\
-	
-	$^{1}$Electronics and Communication Engineering Department, Faculty,TIET,Patiala,India\\ 	\url{https://orcid.org/0000-0002-8714-9507.} \\
-	$^{2,3,4}$Computer Science and Engineering Department, Student, TIET, Patiala,India,\\
-		
+	Shoulder-Based Myoelectric Control for Prosthetic Hand Operation in Transhumeral Amputees Using a Hybrid Deep Learning Model }
+\author[KAUR et al.]{
+	\textbf{Amanpreet KAUR$^{1}$\thanks{aman.preet@thapar.edu}~, Hemanshu MANDHANA$^{2,*}$, Gazal ARORA$^{3,*}$, Arnav JAIN$^{4,*}$}\\
+
+	$^{1}$Electronics and Communication Engineering Department, Faculty, TIET, Patiala, India\\ 	\url{https://orcid.org/0000-0002-8714-9507} \\
+	$^{2,3,4}$Computer Science and Engineering Department, Student, TIET, Patiala, India\\
+	$^{*}$These authors contributed equally to this work.\\
+
 	\rec{...}
 	\acc{...}
 	\finv{...}
@@ -57,7 +57,7 @@ Disability issues have a significant impact on people's living standards worldwi
 \indent
 Currently, mechanisms supporting two degrees of freedom are relatively simple and widely employed \cite{kaur2016comparison},\cite{chaobankoh2024classification} . Sensors need to be carefully positioned in a well-designed location to achieve more DOF \cite{jarrasse2016classification}. Usually, myoelectric upper-limb prostheses use two upper extremity actuators to control one degree of freedom (DoF)  \cite{ahmad2024emg}. Myoelectric prostheses with multiple degrees of freedom can be better controlled for transhumeral amputees by implanting a sensor in their shoulder \cite {kaur2016comparison}\cite{chaobankoh2024classification},\cite{jarrasse2016classification}. Once sEMG signals are captured via strategically placed sensors, accurately interpreting them becomes critical for prosthetic control. For this purpose, various classification techniques have been employed to decode the intended movements. As an effective means to classify sEMG patterns\cite {li2017motion} \cite{xie2015comparative},several different classifier methods include artificial neural networks (ANNs), support vector machines (SVM) \cite {singh2020comparative}, fuzzy logic (FL), genetic algorithms (GA), linear discriminant analysis (LDA), naive Bayes (NB), K-Nearest Neighbours (KNN), AdaBoost, Random Forests (RF) and others \cite{basak2021svm}. Acquiring sEMG signals from muscles to categorize specific shoulder movements is a considerable challenge \cite{rani2023surface}. The stochastic nature and high variability of sEMG signals make it difficult for different classifiers to handle this information; thus, the choice of an appropriate classifier is critical\cite{salinas2022comparison}. To address this, Trigili et al;\cite{trigili2019detection} developed a machine learning-based algorithm to detect and classify movements of the upper extremities, using pattern recognition. Furthermore, Pulliam, C.L.et al; \cite {pulliam2011emg} utilized time-delayed artificial neural networks (TDANN) to classify the different movements of the arm with the set of muscles based on the transhumeral amputees. The study evaluated the relative effectiveness of different muscle subsets in predicting arm movements.\\
 \indent Various features were extracted, and the author reported average root-mean-square errors of approximately 15.7' and 24.9', as well as average R2 values of around 0.81 and 0.46 for elbow flexion/extension and forearm pronation/supination, respectively. However, it should be noted that this study did not use data exclusively from transhumeral amputees. By increasing the degrees of freedom (DOFs) of an existing portable upper-limb exoskeleton, this author\cite{truong2024design} seeks to improve its design without sacrificing performance by keeping the structure lightweight and uncomplicated. The suggested system will include four DOFs in total: three at the shoulder joint to facilitate multidirectional movement and one at the elbow joint for flexion and extension. Wearable robotic exoskeleton with EMC control for upper arm rehabilitation that uses Long Short-Term Memory (LSTM) networks to control motion adaptively \cite{samarakoon2025long}. Some authors used data directly obtained from transhumeral amputees \cite {jiang2020shoulder} to enhance the clinical significance of the control system. A study \cite{gaudet2018classification} where transhumeral amputees' residual limbs were surrounded by six evenly spaced sEMG channels. The feasibility of using residual shoulder muscle activity for upper-limb prosthesis control was demonstrated by the authors' use of a multilayer perception (MLP) trained with backpropagation, achieving an average classification accuracy of 81.1\%\\
-\indent Hurtado et al\cite{hurtado2024movements} developed a classification system for elbow movements in elbow dis-articulation. Five elbow movements were recorded over different time intervals. A comprehensive feature set, such as mean absolute value (MAY), zero crossings (ZC), signal sign changes (SSC), etc., was extracted. Six different classifiers, such as Random Forest (RF), Linear Discriminant Analysis (LDA), Quadratic Discriminant Analysis (QDA), k-Nearest Neighbors (KNN), Support Vector Machine (SVM), and Multilayer Perceptron (MLP), were tested to classify the movements, with hyper parameters optimized using cross-validation. Among the classifiers, the random forest (RF) model achieved the highest accuracy of 74.85\% ± 6.28\%, outperforming all other models. However, because the shoulder region is where the majority of upper-limb muscle activity originates in upper-limb amputees, sensor placement presents a significant challenge. Since the electromyography signals from the shoulder muscles must accurately depict the intended movements of the missing limb, it is crucial but challenging to capture and interpret these signals [\cite{berjis2025selecting,reilly2020computational}.\\
+\indent Hurtado et al\cite{hurtado2024movements} developed a classification system for elbow movements in elbow dis-articulation. Five elbow movements were recorded over different time intervals. A comprehensive feature set, such as mean absolute value (MAY), zero crossings (ZC), signal sign changes (SSC), etc., was extracted. Six different classifiers, such as Random Forest (RF), Linear Discriminant Analysis (LDA), Quadratic Discriminant Analysis (QDA), k-Nearest Neighbors (KNN), Support Vector Machine (SVM), and Multilayer Perceptron (MLP), were tested to classify the movements, with hyper parameters optimized using cross-validation. Among the classifiers, the random forest (RF) model achieved the highest accuracy of 74.85\% ± 6.28\%, outperforming all other models. However, because the shoulder region is where the majority of upper-limb muscle activity originates in upper-limb amputees, sensor placement presents a significant challenge. Since the electromyography signals from the shoulder muscles must accurately depict the intended movements of the missing limb, it is crucial but challenging to capture and interpret these signals \cite{berjis2025selecting,reilly2020computational}.\\
 \indent Despite extensive research on decoding upper-limb movements using EMG signals, most available studies emphasize the distal muscles of the forearm and wrist. Comparatively fewer efforts have been made to explore EMG activity originating from the shoulder region, which plays a central role in motion control for transhumeral amputees. This observation forms the key motivation       of the present study. \\
 The present work makes several notable contributions.\\
 •	It focuses on the analysis of EMG signals obtained from the Pectoralis Major, Trapezius, and Teres Major muscles, a relatively unexplored source of control information for transhumeral amputees who lack distal muscle activity.\\
@@ -144,7 +144,7 @@ These angular variations confirm the controlled execution of shoulder elevation,
 		\caption{Block diagram for proposed hybrid architecture combining CNN and LSTM branches with feature fusion and a meta-classifier for shoulder posture classification}
 		\label{fig:hybrid}
 	\end{figure*}
-	In this, each window was used as a time segment to capture a short duration of muscle activity, enabling localized examination without losing the dynamic properties of the signals. Feature extraction involves segmenting the sEMG signal into 256-ms-long windows with a 25\% overlap between consecutive windows. A window size of w = 100 samples was used empi 00000rically to balance temporal resolution and contextual information. A step size of 10 samples was used to create overlap between windows, ensuring that transient signal events, especially those near boundaries, were properly captured.
+	In this, each window was used as a time segment to capture a short duration of muscle activity, enabling localized examination without losing the dynamic properties of the signals. Feature extraction involves segmenting the sEMG signal into 256-ms-long windows with a 25\% overlap between consecutive windows. A window size of $w = 100$ samples was used empirically to balance temporal resolution and contextual information. A step size of 10 samples was used to create overlap between windows, ensuring that transient signal events, especially those near boundaries, were properly captured.
 \subsection{Proposed Hybrid CNN–LSTM Architecture}
 Deep learning-based feature extraction was used in place of designing signal descriptors by hand. As shown in Figure~\ref{fig:hybrid},the block diagram of a custom convolution neural network (CNN) and the pre-trained fine-tuned models were used to acquire hierarchical representations directly from raw EMG windows.
 
@@ -154,7 +154,7 @@ Deep learning-based feature extraction was used in place of designing signal des
 	\caption{Hybrid CNN-LSTM architecture for shoulder movement classification showing input EMG signal, convolutional layers with filter and kernel sizes, max-pooling layers with pool sizes, and LSTM integration for temporal feature learning.}
 	\label{fig:CNN-LSTM}
 \end{figure*}
-They were chosen for complementary advantages: CNN over spatial feature coding and LSTM over discovering temporal dependencies along sequences of signals.Before beginning with the architectures of the models used, Algorithm1 shown in Fig.~\ref{fig:algorithm} shows the pipeline that has been used throughout the paper
+They were chosen for complementary advantages: CNN over spatial feature coding and LSTM over discovering temporal dependencies along sequences of signals. Before beginning with the architectures of the models used, Algorithm~1 outlines the pipeline that has been used throughout the paper.
 
 \subsection{CNN-Based Spatial Feature Extraction}
 \subsubsection{Custom CNN Architecture}
@@ -387,7 +387,7 @@ The class-specific analysis unveils distinct feature utilization strategies for 
 		Label 3 & 14.5 & 19.3 & 66.2 \\
 		\hline
 	\end{tabular}
-\end{table*}\textbf{}
+\end{table*}
 \subsection{SHAP-Based Interpretability Analysis}
 
 
@@ -492,10 +492,11 @@ The authors declare that there is no conflict of interest regarding the publicat
 	\item · Author Contributions
 \end{itemize}
 All authors contributed significantly to the conception, design, analysis, and preparation of this study.
-[Author 1]: Conceptualization, Methodology, Data acquisition, Original Draft Preparation, Editing, and Supervision.
-[Author 2]: Model Development, Validation, Visualization, draft writing, and editing.
-[Author 3]: Signal Processing and Analysis. Draft writing and editing 
-[Author 4]: Model Development, Validation, Visualization. Draft Writing and editing.
+Amanpreet Kaur: Conceptualization, Methodology, Data acquisition, Original Draft Preparation, Editing, and Supervision.
+Hemanshu Mandhana: Model Development, Validation, Visualization, draft writing, and editing.
+Gazal Arora: Signal Processing and Analysis, Draft writing and editing.
+Arnav Jain: Model Development, Validation, Visualization, Draft Writing and editing.\\
+Hemanshu Mandhana, Gazal Arora, and Arnav Jain contributed equally to this work.
 \begin{itemize}
 	\item · Ethics Approval
 \end{itemize}
