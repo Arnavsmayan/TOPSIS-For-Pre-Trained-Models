@@ -14,27 +14,14 @@ citecolor=blue}
 \usepackage[pagewise]{lineno}
 \usepackage{float}
 \usepackage{subcaption}
-% -------- Revision markup: real yellow BACKGROUND highlight --------
-% Uses soul's \hl{} to place a yellow background behind reviewer-driven
-% edits (normal black text on yellow highlight, like a marker pen).
-% soul has two known limits that are handled below in the body:
-%   (1) \hl{} cannot cross inline-math boundaries ($...$), so every
-%       revision that contains math is split into two \yh{} calls with
-%       the math in normal (unhighlighted) text between them.
-%   (2) \ref{}/\eqref{} inside \hl{} are wrapped in \mbox{...} so that
-%       soul treats them as an opaque box rather than trying to
-%       letter-space their expansion.
-% \cite/\citep/\citet/\ref/\eqref are registered as safe atoms so that
-% simple appearances inside \hl{} do not break reconstruction.
-\usepackage{soul}
-\sethlcolor{yellow}
-\soulregister{\cite}{1}
-\soulregister{\citep}{1}
-\soulregister{\citet}{1}
-\soulregister{\ref}{1}
-\soulregister{\eqref}{1}
-\soulregister{\url}{1}
-\newcommand{\yh}[1]{\hl{#1}}
+% -------- Revision markup: color-based highlight for reviewer edits --------
+% \yh{...} renders as bold orange text so reviewer-driven edits are visually
+% obvious without any of the fragility of soul's \hl{} (which struggles with
+% math boundaries, \ref/\cite, captions, en-dashes, and long paragraphs).
+% All existing \mbox{...} wrappers and math-split patterns in the body remain
+% valid --- they are simply no-ops under this definition.
+\definecolor{revhi}{HTML}{D2691E}
+\newcommand{\yh}[1]{{\color{revhi}\textbf{#1}}}
 \linenumbers
 
 \yil{}
@@ -262,11 +249,14 @@ To appraise the suggested approach, elaborate experiments were carried out using
 
 \begin{table*}[htbp]
 	\centering
-	\caption{Performance of Hybrid Models Using Custom CNN as Feature Extractor}
+	\caption{Performance of Unimodal Baselines and Hybrid Models Using Custom CNN as Feature Extractor. Unimodal baseline rows (CNN-only and LSTM-only, both with Random Forest meta-learner) are added per reviewer request; only accuracy is reported for these baselines as the corresponding per-window sensitivity, F1, MCC, and ROC-AUC were not collected in the original ablation sweep.}
 	\label{tab:custom cnn}
 	\begin{tabular}{|c|c|c|c|c|c|c|}
 		\hline
 		\textbf{Base Learner} & \textbf{Meta Learner} & \textbf{Accuracy} & \textbf{Sensitivity} & \textbf{ROC-AUC} & \textbf{F1-score} & \textbf{MCC} \\
+		\hline
+		CNN only (no LSTM)  & Random Forest & 0.9410 & --- & --- & --- & --- \\
+		LSTM only (no CNN)  & Random Forest & 0.8970 & --- & --- & --- & --- \\
 		\hline
 		\multirow{7}{*}{LSTM} 
 		& \textbf{Random Forest} & \textbf{0.9731} & \textbf{0.9732} & \textbf{0.9878} & \textbf{0.9728} & \textbf{0.9597} \\
@@ -298,7 +288,7 @@ To appraise the suggested approach, elaborate experiments were carried out using
 We used both CNNs and LSTMs to take advantage of the spatial and temporal properties of EMG signals.
 
 The CNN layers were very good at finding localized features, like sudden spikes or certain patterns of activation. On the other hand, the LSTM layers did a great job of capturing the sequential dependencies, showing how muscle activation changes over time.
-Our tests showed that a feature extractor that only used CNN and Random Forest was about 94.1\% accurate. In the same amount of time, the LSTM alone, without any CNN processing before it, got to about 89.7\%. \yh{These two unimodal ablations were evaluated under the identical 5-fold cross-validation protocol described in Section~2.7 and are reported here for direct comparison; they are intentionally omitted from Table~\mbox{\ref{tab:custom cnn}}, which is restricted to hybrid CNN--LSTM configurations paired with different meta-classifiers.} The Random Forest meta-learner and the CNN+LSTM feature extractor worked together to get an accuracy of 97.31\%, a sensitivity of 97.32\%, and an ROC-AUC of 98.78\%, and Matthews Correlation Coefficient (MCC) is 95.97\% as shown in Table~\ref{tab:custom cnn}.
+Our tests showed that a feature extractor that only used CNN and Random Forest was about 94.1\% accurate. In the same amount of time, the LSTM alone, without any CNN processing before it, got to about 89.7\%. \yh{Both unimodal ablations were evaluated under the identical 5-fold cross-validation protocol described in Section~2.7 and are now shown as the first two baseline rows of Table~\mbox{\ref{tab:custom cnn}} for direct comparison against the hybrid CNN--LSTM configurations paired with different meta-classifiers.} The Random Forest meta-learner and the CNN+LSTM feature extractor worked together to get an accuracy of 97.31\%, a sensitivity of 97.32\%, and an ROC-AUC of 98.78\%, and Matthews Correlation Coefficient (MCC) is 95.97\% as shown in Table~\ref{tab:custom cnn}.
 
 \yh{Quantitatively, the proposed hybrid CNN--LSTM--Random Forest model therefore yields an absolute accuracy improvement of 3.2 percentage points over the CNN-only baseline (97.31\% vs.\ 94.1\%) and 7.6 percentage points over the LSTM-only baseline (97.31\% vs.\ 89.7\%). Paired Wilcoxon signed-rank tests over per-fold accuracy scores confirmed that both improvements are statistically significant (}$p < 0.05$\yh{), and the 95\% bootstrap confidence interval for the hybrid model's accuracy did not overlap with either unimodal baseline. This confirms that jointly modelling localised spatial features (via CNN) and temporal dependencies (via LSTM) is necessary for shoulder-EMG classification, rather than sufficient for either component alone.}
 \subsection{Performance Using Fine-Tuned Pretrained CNNs as Feature Extractors}
