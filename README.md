@@ -35,4 +35,4 @@ Here is a sample table of pre-trained conversational models and their respective
    import topsis_arnav_102203979
    topsis 'Initial_Data.csv' '1,1,1' '+,+,-' 'output.csv'
 4. View the output.csv and images.png for the results.
-!![image](https://github.com/Arnavsmayan/TOPSIS-For-Pre-Trained-Models/blob/main/image.png)
+!![image](https://github.com/Arnavsmayan/TOPSIS-For-Pre-Trained-Models/blob/main/topsis/image.png)
