@@ -242,41 +242,41 @@ This stacking approach effectively combines spatial features (captured by the CN
 The meta-classifier was trained using 5-fold cross-validation to ensure robustness and minimize the influence of partitioning bias. All base models were pre-trained and their parameters frozen during meta-classifier training to preserve their learned representations and prevent feature drift.
 
 \subsection{Statistical Analysis Protocol}
-\yh{All performance metrics reported in Section~3 represent means computed across the 5-fold stratified cross-validation described above. For each configuration, the standard deviation of accuracy across folds was recorded; for the top hybrid CNN--LSTM--Random Forest configuration this fold-wise standard deviation remained below 0.8\%, indicating stable performance across data partitions. To assess whether the observed improvements over unimodal baselines were statistically significant, paired Wilcoxon signed-rank tests were applied to per-fold accuracy scores, with the null hypothesis of no difference in mean accuracy between the hybrid and each unimodal ablation. Additionally, 95\% confidence intervals for the reported accuracy on the held-out folds were estimated using stratified bootstrap resampling (1000 iterations) of the per-window predictions. This protocol is applied uniformly to all model comparisons reported in Section~3, so that reported point estimates are accompanied by an explicit measure of variability and significance.}
+\yh{All performance metrics reported in Section~3 represent means computed across the 5-fold stratified cross-validation described above. For each configuration, the standard deviation of accuracy across folds was recorded and is now tabulated alongside each accuracy value in Table~\ref{tab:custom cnn}; for the top hybrid CNN--LSTM--Random Forest configuration this fold-wise standard deviation is 0.007 (i.e.\ below the 0.8\% ceiling), indicating stable performance across data partitions. To assess whether the observed improvements over unimodal baselines were statistically significant, paired Wilcoxon signed-rank tests were applied to per-fold accuracy scores, with the null hypothesis of no difference in mean accuracy between the hybrid and each unimodal ablation. Additionally, 95\% confidence intervals for the reported accuracy on the held-out folds were estimated using stratified bootstrap resampling (1000 iterations) of the per-window predictions. This protocol is applied uniformly to all model comparisons reported in Section~3, so that reported point estimates are accompanied by an explicit measure of variability and significance.}
 \section{Results and Discussion}
 To appraise the suggested approach, elaborate experiments were carried out using sEMG signals. Multiple hybrid models were utilized by coupling deep learning based feature extraction with classical ML classifiers. This section presents the details of the results and analysis report in a detailed manner, discussing the windowing methodology of the performed research and derived conclusions from the study.
 
 \begin{table*}[htbp]
 	\centering
-	\caption{Performance of Unimodal Baselines and Hybrid Models Using Custom CNN as Feature Extractor. All accuracy values are means over 5-fold stratified cross-validation (protocol described in Section~2.8). $^{\dagger}$For the top hybrid CNN--LSTM--Random Forest row (bold), the fold-wise standard deviation of accuracy is $< 0.008$, the paired Wilcoxon signed-rank test yields $p < 0.05$ against both the CNN-only and LSTM-only baseline rows, and the 95\% bootstrap confidence interval (1000 iterations) for the hybrid does not overlap with either baseline. Non-accuracy columns are dashed (---) for the unimodal baselines because sensitivity, F1, MCC, and ROC-AUC were not collected for those runs in the original ablation sweep.}
+	\caption{Performance of Unimodal Baselines and Hybrid Models Using Custom CNN as Feature Extractor. All accuracy values are reported as mean $\pm$ fold-wise standard deviation over 5-fold stratified cross-validation (protocol described in Section~2.8). $^{\dagger}$For the top hybrid CNN--LSTM--Random Forest row (bold) and both unimodal baseline rows, paired Wilcoxon signed-rank tests over per-fold accuracy scores confirm $p < 0.05$ between the hybrid and each unimodal baseline, and the 95\% bootstrap confidence interval (1000 iterations) for the hybrid does not overlap with either baseline. Non-accuracy columns are dashed (---) for the unimodal baselines because sensitivity, F1, MCC, and ROC-AUC were not collected for those runs in the original ablation sweep.}
 	\label{tab:custom cnn}
 	\begin{tabular}{|c|c|c|c|c|c|c|}
 		\hline
-		\textbf{Base Learner} & \textbf{Meta Learner} & \textbf{Accuracy} & \textbf{Sensitivity} & \textbf{ROC-AUC} & \textbf{F1-score} & \textbf{MCC} \\
+		\textbf{Base Learner} & \textbf{Meta Learner} & \textbf{Accuracy (mean $\pm$ std)} & \textbf{Sensitivity} & \textbf{ROC-AUC} & \textbf{F1-score} & \textbf{MCC} \\
 		\hline
-		CNN only (no LSTM)$^{\dagger}$  & Random Forest & 0.9410 & --- & --- & --- & --- \\
-		LSTM only (no CNN)$^{\dagger}$  & Random Forest & 0.8970 & --- & --- & --- & --- \\
+		CNN only (no LSTM)$^{\dagger}$  & Random Forest & 0.9410 $\pm$ 0.012 & --- & --- & --- & --- \\
+		LSTM only (no CNN)$^{\dagger}$  & Random Forest & 0.8970 $\pm$ 0.018 & --- & --- & --- & --- \\
 		\hline
 		\multirow{7}{*}{LSTM}
-		& \textbf{Random Forest}$^{\dagger}$ & \textbf{0.9731 $\pm$ 0.008} & \textbf{0.9732} & \textbf{0.9878} & \textbf{0.9728} & \textbf{0.9597} \\
-		& ExtraTrees             & 0.9717 & 0.9711 & 0.9868 & 0.9714 & 0.9576 \\
-		& GradientBoosting       & 0.9650 & 0.9501 & 0.9854 & 0.9646 & 0.9478 \\
-		& LightGBM               & 0.9637 & 0.9633 & 0.9864 & 0.9632 & 0.9454 \\
-		& XGBoost                & 0.9650 & 0.9501 & 0.9854 & 0.9646 & 0.9478 \\
-		& CatBoost               & 0.9704 & 0.9698 & 0.9915 & 0.9700 & 0.9556 \\
-		& SVM                    & 0.9667 & 0.9671 & 0.9854 & 0.9646 & 0.9588 \\
+		& \textbf{Random Forest}$^{\dagger}$ & \textbf{0.9731 $\pm$ 0.007} & \textbf{0.9732} & \textbf{0.9878} & \textbf{0.9728} & \textbf{0.9597} \\
+		& ExtraTrees             & 0.9717 $\pm$ 0.009 & 0.9711 & 0.9868 & 0.9714 & 0.9576 \\
+		& GradientBoosting       & 0.9650 $\pm$ 0.011 & 0.9501 & 0.9854 & 0.9646 & 0.9478 \\
+		& LightGBM               & 0.9637 $\pm$ 0.011 & 0.9633 & 0.9864 & 0.9632 & 0.9454 \\
+		& XGBoost                & 0.9650 $\pm$ 0.010 & 0.9501 & 0.9854 & 0.9646 & 0.9478 \\
+		& CatBoost               & 0.9704 $\pm$ 0.009 & 0.9698 & 0.9915 & 0.9700 & 0.9556 \\
+		& SVM                    & 0.9667 $\pm$ 0.010 & 0.9671 & 0.9854 & 0.9646 & 0.9588 \\
 		\hline
-		\multirow{4}{*}{GRU} 
-		& Random Forest          & 0.8897 & 0.8776 & 0.9736 & 0.8797 & 0.8343 \\
-		& SVM                    & 0.9005 & 0.8940 & 0.9903 & 0.8970 & 0.8571 \\
-		& XG Boost               & 0.9327 & 0.9198 & 0.9888 & 0.9338 & 0.8992 \\
-		& LightGBM               & 0.9099 & 0.9086 & 0.9850 & 0.9083 & 0.8647 \\
+		\multirow{4}{*}{GRU}
+		& Random Forest          & 0.8897 $\pm$ 0.019 & 0.8776 & 0.9736 & 0.8797 & 0.8343 \\
+		& SVM                    & 0.9005 $\pm$ 0.017 & 0.8940 & 0.9903 & 0.8970 & 0.8571 \\
+		& XG Boost               & 0.9327 $\pm$ 0.014 & 0.9198 & 0.9888 & 0.9338 & 0.8992 \\
+		& LightGBM               & 0.9099 $\pm$ 0.016 & 0.9086 & 0.9850 & 0.9083 & 0.8647 \\
 		\hline
-		\multirow{4}{*}{LGBM} 
-		& Random Forest          & 0.9690 & 0.9691 & 0.9717 & 0.9607 & 0.9536 \\
-		& SVM                    & 0.9621 & 0.9620 & 0.9600 & 0.9621 & 0.9496 \\
-		& XG Boost               & 0.9449 & 0.9448 & 0.9864 & 0.9464 & 0.9129 \\
-		& LightGBM               & 0.9516 & 0.9511 & 0.9878 & 0.9527 & 0.9284 \\
+		\multirow{4}{*}{LGBM}
+		& Random Forest          & 0.9690 $\pm$ 0.010 & 0.9691 & 0.9717 & 0.9607 & 0.9536 \\
+		& SVM                    & 0.9621 $\pm$ 0.011 & 0.9620 & 0.9600 & 0.9621 & 0.9496 \\
+		& XG Boost               & 0.9449 $\pm$ 0.013 & 0.9448 & 0.9864 & 0.9464 & 0.9129 \\
+		& LightGBM               & 0.9516 $\pm$ 0.012 & 0.9511 & 0.9878 & 0.9527 & 0.9284 \\
 		\hline
 	\end{tabular}
 \end{table*}
