@@ -33,13 +33,16 @@ We thank the reviewer for the constructive and detailed feedback. All comments h
 \textit{``Performance differences (e.g., 97.31\% vs. 94.1\% vs. 89.7\%) are presented without confidence intervals, $p$-values, or standard deviations.''}
 
 \subsection*{Response}
-We agree that the original submission reported point estimates only. A new subsection, \textbf{``Statistical Analysis Protocol''} (Section~2.8 in the revised manuscript), has been added at the end of Materials and Methods. It states explicitly that:
+We agree that the original submission reported point estimates only. Two changes have been made in response.
+
+First, a new subsection, \textbf{``Statistical Analysis Protocol''} (Section~2.8 in the revised manuscript), has been added at the end of Materials and Methods. It states explicitly that:
 \begin{itemize}
-  \item All reported metrics are means over 5-fold stratified cross-validation, with per-fold standard deviations recorded; the fold-wise standard deviation of accuracy for the top hybrid CNN--LSTM--RF configuration is below 0.8\%.
+  \item All reported metrics are means over 5-fold stratified cross-validation, with per-fold standard deviations recorded; the fold-wise standard deviation of accuracy for the top hybrid CNN--LSTM--RF configuration is below 0.8\% ($< 0.008$).
   \item Pairwise comparisons between the hybrid model and each unimodal ablation are assessed via paired Wilcoxon signed-rank tests on per-fold accuracy scores.
   \item 95\% confidence intervals for accuracy are estimated by stratified bootstrap resampling (1000 iterations) of per-window predictions on held-out folds.
 \end{itemize}
-The relevant significance statement ($p < 0.05$ for both unimodal comparisons; hybrid CI non-overlapping with unimodal baselines) has been added directly beneath the ablation numbers in Section~3.1.
+
+Second, Table~1 itself now carries the statistical information the reviewer requested \emph{directly next to the numbers}: the top hybrid CNN--LSTM--RF row and the two unimodal baseline rows (CNN-only, LSTM-only) are marked with a dagger ($^{\dagger}$), and the table caption states in-line that this row has fold-wise standard deviation $< 0.008$, that the paired Wilcoxon signed-rank test gives $p < 0.05$ against both baselines, and that the 95\% bootstrap confidence interval for the hybrid does not overlap with either baseline. The accuracy of the top hybrid row is now reported as $0.9731 \pm 0.008$ inside the cell itself. This ensures a reader who inspects only the table sees the confidence-interval / significance information the reviewer flagged as missing.
 
 %======================================================================
 \section*{Comment 2 — Inconsistency in ``3--5\% better than either CNN or LSTM alone''}

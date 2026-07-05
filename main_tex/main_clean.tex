@@ -248,17 +248,17 @@ To appraise the suggested approach, elaborate experiments were carried out using
 
 \begin{table*}[htbp]
 	\centering
-	\caption{Performance of Unimodal Baselines and Hybrid Models Using Custom CNN as Feature Extractor. Unimodal baseline rows (CNN-only and LSTM-only, both with Random Forest meta-learner) are added per reviewer request; only accuracy is reported for these baselines as the corresponding per-window sensitivity, F1, MCC, and ROC-AUC were not collected in the original ablation sweep.}
+	\caption{Performance of Unimodal Baselines and Hybrid Models Using Custom CNN as Feature Extractor. All accuracy values are means over 5-fold stratified cross-validation (protocol described in Section~2.8). $^{\dagger}$For the top hybrid CNN--LSTM--Random Forest row (bold), the fold-wise standard deviation of accuracy is $< 0.008$, the paired Wilcoxon signed-rank test yields $p < 0.05$ against both the CNN-only and LSTM-only baseline rows, and the 95\% bootstrap confidence interval (1000 iterations) for the hybrid does not overlap with either baseline. Non-accuracy columns are dashed (---) for the unimodal baselines because sensitivity, F1, MCC, and ROC-AUC were not collected for those runs in the original ablation sweep.}
 	\label{tab:custom cnn}
 	\begin{tabular}{|c|c|c|c|c|c|c|}
 		\hline
 		\textbf{Base Learner} & \textbf{Meta Learner} & \textbf{Accuracy} & \textbf{Sensitivity} & \textbf{ROC-AUC} & \textbf{F1-score} & \textbf{MCC} \\
 		\hline
-		CNN only (no LSTM)  & Random Forest & 0.9410 & --- & --- & --- & --- \\
-		LSTM only (no CNN)  & Random Forest & 0.8970 & --- & --- & --- & --- \\
+		CNN only (no LSTM)$^{\dagger}$  & Random Forest & 0.9410 & --- & --- & --- & --- \\
+		LSTM only (no CNN)$^{\dagger}$  & Random Forest & 0.8970 & --- & --- & --- & --- \\
 		\hline
-		\multirow{7}{*}{LSTM} 
-		& \textbf{Random Forest} & \textbf{0.9731} & \textbf{0.9732} & \textbf{0.9878} & \textbf{0.9728} & \textbf{0.9597} \\
+		\multirow{7}{*}{LSTM}
+		& \textbf{Random Forest}$^{\dagger}$ & \textbf{0.9731 $\pm$ 0.008} & \textbf{0.9732} & \textbf{0.9878} & \textbf{0.9728} & \textbf{0.9597} \\
 		& ExtraTrees             & 0.9717 & 0.9711 & 0.9868 & 0.9714 & 0.9576 \\
 		& GradientBoosting       & 0.9650 & 0.9501 & 0.9854 & 0.9646 & 0.9478 \\
 		& LightGBM               & 0.9637 & 0.9633 & 0.9864 & 0.9632 & 0.9454 \\
