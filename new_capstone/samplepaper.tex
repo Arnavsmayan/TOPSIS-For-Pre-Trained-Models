@@ -426,16 +426,14 @@ As shown in Fig.~\ref{fig:fusion_curves}, the fusion model shows smooth converge
 Given the class imbalance inherent in medical diagnostic tasks, performance was further evaluated using the Precision Recall Area Under Curve (PR AUC) metric. The high PR AUC value achieved by the fusion model, illustrated in Fig.~\ref{fig:pr_curve}, indicates that the model balances sensitivity and precision effectively. This is critical for a breast cancer screening pipeline.
 
 \subsection{Robustness to Input Perturbations}
-For a robustness check, Gaussian noise got added, independently, to both the thermographic and the mammographic test features. Even so the fusion model held. Accuracy sat at 93.1 percent. That is down from 94.5. Not a huge drop, really. So the model does not fall apart when the inputs are a bit noisier than they were at training time.
+To probe robustness we injected zero mean Gaussian noise independently into the thermographic and the mammographic test feature vectors and re evaluated the classifier under this perturbed input regime. The fusion model held its performance. Test accuracy under noise was 93.1 percent against 94.5 percent on the clean test set, a drop of only 1.4 percentage points, and there was no accompanying collapse in the precision recall curve. The fact that each modality stream individually degrades more sharply under the same perturbation but the joint model does not suggests that the two feature branches are absorbing different failure modes and that the alignment step is compensating for them at the latent level rather than at the raw feature level.
 
 
 \subsection{Explainability via SHAP Analysis}
 
 
 
-Fig.~\ref{fig:shap} plots the mean absolute SHAP value per latent dimension. What that tells us, roughly, is which of the latent coordinates the classifier is actually leaning on. The picture is sparse. A handful of dimensions carry most of the weight. The rest sit near zero and do very little.
-
-So the classifier is not treating all 128 dimensions the same way. It leans on a small informative subset instead. Which is arguably a good thing here, since it makes the downstream SHAP explanations easier to read and easier to defend to a clinician.
+Fig.~\ref{fig:shap} plots the mean absolute SHAP value across every latent feature dimension. The distribution is sparse. Only a small number of coordinates carry substantial contribution mass while the vast majority sit at or near zero and are effectively silent during inference on the held out test set. This is diagnostic of a classifier that is not treating all 128 latent dimensions equivalently but is instead concentrating its evidence on a compact informative subset something that is desirable both because it makes the downstream SHAP explanations easier for a clinician to interpret and because it hints at redundancy in the raw fused representation that a future dimensionality reduction step could exploit.
 
 
 \subsection{Latent Space Separability}
@@ -449,7 +447,7 @@ So the classifier is not treating all 128 dimensions the same way. It leans on a
     \label{fig:tsne}
 \end{figure}
 
-Fig.~\ref{fig:tsne} is a two dimensional t\textendash SNE projection of the fused latent space. Benign and malignant points sit in visibly separate clumps. Some overlap in the middle, yes, but the two classes do come out as different groups rather than one blurred blob. Which is what we want out of the learned representation.
+Fig.~\ref{fig:tsne} shows a two dimensional t\textendash SNE projection of the fused latent embeddings on the held out test set. Benign and malignant samples land in visibly separated clusters. Some overlap persists in the central region of the embedding as one would expect for a continuous underlying pathology axis, however the bulk of each class occupies its own distinct region of the projected space and this separation is what we want to see out of a representation that has been aligned across the two modalities at the latent level.
 
 \subsubsection{PCA Based 3D Projection}
 
@@ -460,22 +458,22 @@ Fig.~\ref{fig:tsne} is a two dimensional t\textendash SNE projection of the fuse
     \label{fig:pca3d}
 \end{figure}
 
-The three dimensional PCA plot in Fig.~\ref{fig:pca3d} tells the same story from a different angle. Class separation is present. It is not a hard boundary though. The transition from one cluster to the other looks smooth. More of a gradient than a wall. That is consistent with breast pathology being a continuum in the first place rather than a binary flag.
+The three dimensional PCA projection in Fig.~\ref{fig:pca3d} corroborates the same observation along the principal component axes of the fused latent representation. Class separation is present. The boundary between the two clusters however is not a hard axis aligned partition and instead appears as a smooth transition in principal component space suggesting that the classifier has recovered a continuous disease severity manifold rather than an axis aligned hyperplane between benign and malignant.
 
 \subsection{Summary of Findings}
-Pulling the results together: the multimodal latent fusion setup does what we hoped it would do. Thermogram and mammogram information end up combined at the latent level. 94.5 percent test accuracy on the binary benign versus malignant task. PR AUC of 0.991. Under Gaussian noise it slips to 93.1 percent, not much of a fall really. Latent space plots (t\textendash SNE, PCA) show the two classes as visibly distinct groupings. SHAP gives per feature attributions on top of that.
+Bringing the experimental results together the multimodal latent fusion pipeline meets the objectives that were laid out at the start of this study. Thermographic and mammographic information are combined at the latent representation level rather than at raw pixel level and the joint classifier reaches 94.5 percent test accuracy with a PR AUC of 0.991 on the binary benign versus malignant task. Robustness under Gaussian input noise stands at 93.1 percent, only a 1.4 percentage point drop from the clean baseline. Latent space projections through t\textendash SNE and PCA confirm class wise separability, while the SHAP analysis provides per feature attribution over the fused latent representation.
 
-Put together, this points at latent level multimodal fusion being a workable and reasonably interpretable design for breast cancer analysis in a research setting.
+Read together these observations argue that latent level multimodal fusion is a workable and reasonably interpretable design choice for breast cancer analysis within a research oriented diagnostic setting.
 
 
 \section{Conclusion and Future Work}
-The paper laid out a multimodal breast cancer detection pipeline. It routes thermographic and mammographic imagery through their own separate encoders. Each encoder pushes its features into a shared latent space. An alignment loss then pulls the two projections toward each other in that space. The aligned embeddings are concatenated and passed to a binary classifier over the benign and malignant classes.
+This paper presented a multimodal breast cancer detection pipeline that routes thermographic and mammographic imagery through independent modality specific encoders. Each encoder projects its features into a common 128 dimensional latent space and an alignment objective drives the two projections toward each other in that space so that the corresponding cross modal representations become geometrically comparable at the latent level. The aligned latent embeddings are then concatenated and passed to a binary classifier that discriminates benign from malignant instances.
 
-Empirically the pipeline holds up. It reports 94.5 percent test accuracy. PR AUC comes out at 0.991. Both numbers are on the joint CBIS\textendash DDSM plus DMR\textendash IR held out test set. Under Gaussian input noise the accuracy slips only to 93.1 percent. Latent space views (t\textendash SNE, PCA) show benign and malignant as visibly separate groups. Taken together this says the learned latent codes are picking up on disease relevant information rather than modality specific noise.
+Empirically the pipeline holds up under evaluation. The joint held out test set drawn from CBIS\textendash DDSM and DMR\textendash IR yields 94.5 percent classification accuracy and a PR AUC of 0.991, and injecting zero mean Gaussian noise into both modality feature streams only reduces accuracy to 93.1 percent. Latent space visualisations under t\textendash SNE and PCA show benign and malignant samples occupying visibly separate regions of the projected space. Taken together these signals suggest that the learned latent codes are keying on disease relevant information rather than on modality specific noise or acquisition artefacts.
 
-Beyond raw numbers, the paper leaned on SHAP for interpretability. SHAP surfaces which latent dimensions the classifier actually uses. That matters. A radiologist reviewing an automated flag will want to see a reason, not just a probability score.
+Beyond the raw performance numbers the paper leaned on SHAP based post hoc interpretability so that individual predictions could be inspected at the level of latent feature contributions. This is not cosmetic. A radiologist reviewing an automated flag will want to see which fused features drove the model toward its call, not only the probability score attached to that call, and the SHAP scaffolding in this pipeline is what makes that kind of per prediction inspection possible in practice.
 
-So the overall message is this. Latent level multimodal fusion is a workable strategy for breast cancer detection. It gives robustness, some interpretability, and it beats a unimodal baseline in the ablation. Where does the work go from here. First, validation on larger and more clinically diverse cohorts. Second, explicit cross modal attention between the two backbones. Third, extension to longitudinal and near real time diagnostic scenarios where the classifier has to update as new scans arrive.
+The overall message of this study is that latent level multimodal fusion is a workable strategy for automated breast cancer analysis. It offers robustness under input noise, a measurable performance gap over the unimodal baseline in the reported ablation, and a route to per prediction interpretability through SHAP. Three concrete directions look promising for follow on work. First, validation of the pipeline on larger and clinically more diverse cohorts ideally with multi site acquisition variability and biopsy confirmed labels. Second, replacement of the current concatenation based fusion with explicit cross modal attention layers between the two backbones so that mammographic and thermographic evidence can weight each other adaptively rather than uniformly. Third, extension of the pipeline to longitudinal and near real time diagnostic scenarios in which the classifier is expected to update its state as new scans arrive for the same patient over time.
 
 
 \bibliography{refs}
