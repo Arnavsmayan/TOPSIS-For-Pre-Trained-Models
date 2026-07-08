@@ -476,6 +476,19 @@ Beyond the raw performance numbers the paper leaned on SHAP based post hoc inter
 The overall message of this study is that latent level multimodal fusion is a workable strategy for automated breast cancer analysis. It offers robustness under input noise, a measurable performance gap over the unimodal baseline in the reported ablation, and a route to per prediction interpretability through SHAP. Three concrete directions look promising for follow on work. First, validation of the pipeline on larger and clinically more diverse cohorts ideally with multi site acquisition variability and biopsy confirmed labels. Second, replacement of the current concatenation based fusion with explicit cross modal attention layers between the two backbones so that mammographic and thermographic evidence can weight each other adaptively rather than uniformly. Third, extension of the pipeline to longitudinal and near real time diagnostic scenarios in which the classifier is expected to update its state as new scans arrive for the same patient over time.
 
 
+\section*{Author Contributions}
+The contributions of each author to this work are summarised below using standard CRediT taxonomy roles.
+\begin{itemize}
+    \item \textbf{Arnav Jain}: Conceptualization, Methodology, Software, Formal analysis, Investigation, Data curation, Visualization, Writing \textendash{} original draft.
+    \item \textbf{Vaibhav Baldeva}: Methodology, Software, Investigation, Writing \textendash{} original draft.
+    \item \textbf{Somya Bansal}: Data curation, Writing \textendash{} original draft (supporting).
+    \item \textbf{Ruhani Bhatia}: Validation, Writing \textendash{} original draft (supporting).
+    \item \textbf{Mansi Gambhir}: Data curation, Writing \textendash{} original draft (supporting).
+    \item \textbf{Simranjit Kaur}: Supervision, Project administration, Writing \textendash{} review and editing.
+    \item \textbf{Sachin Kansal}: Supervision, Writing \textendash{} review and editing.
+\end{itemize}
+All authors read and approved the final manuscript.
+
 \bibliography{refs}
 \bibliographystyle{IEEEtran}
 
