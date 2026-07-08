@@ -51,19 +51,19 @@ Breast cancer detection, thermography, mammography, multimodal fusion, latent sp
 \end{IEEEkeywords}
 
 \section{Introduction}
-Breast cancer sits among the leading causes of mortality among women worldwide. Over 2.3 million new cases are reported each year \cite{sung2021global}. Mammography is still the current gold standard for screening \cite{michell2018role, yala2022deep}, but the diagnostic performance is bounded by several things at once: breast tissue density, exposure to ionizing radiation, and inter observer variability across radiologists. All this has driven a growing interest in add on imaging modalities \cite{ng2022review, arora2008effectiveness}. Infrared thermography stands out. It offers complementary physiological insight and needs no ionizing dose. It is also quick and painless to acquire.
+Breast cancer sits among the leading causes of mortality among women worldwide. Over 2.3 million new cases are reported each year \cite{sung2021global}. Mammography is still the current gold standard for screening \cite{michell2018role, yala2022deep}, but the diagnostic performance is bounded by several things at once: breast tissue density, exposure to ionizing radiation, and inter observer variability across radiologists. All this has driven a growing interest in add on imaging modalities \cite{ng2022review, arora2008effectiveness}. Infrared thermography stands out. Complementary physiological insight, no ionizing dose, and the acquisition itself is quick and painless.
 
 Deep learning has shifted the ceiling in both mammogram and thermogram analysis, and not incrementally. Convolutional networks are now picking out lesions, microcalcification clusters and vascular asymmetries that a radiologist can genuinely miss on unaided visual inspection, particularly at the earliest disease stage where the visible signal is faint or is buried inside dense glandular tissue. The reported numbers back this up. Recent mammography benchmarks report classification accuracies above 85 percent \cite{Shen2019DeepLearningMammo, Ragab2019CBISDDSM, AlMnayyis2025}. Thermography deep models sit in a comparable range \cite{pereira2020infrared, Roslidar2020, Alzahrani2025}. The scaling angle matters just as much as the accuracy angle. A deep model can grind through thousands of screening cases in the time a human reader takes on a hundred, and the clinical value comes from catching the malignancy patterns that live inside pixel statistics rather than inside anything the human eye is trained to notice.
 
-Thermography reads temperature asymmetries and vascular heat signatures, and these reflect the underlying metabolic and angiogenic changes that come with malignancy \cite{head1979infrared, ng2009breast}. Recent progress in machine learning and in deep neural networks has revitalized thermographic imaging by allowing automated feature extraction from complex thermal patterns that would be difficult to characterize by hand \cite{pereira2020infrared, el2021machine}. Even so, thermography on its own is often not specific enough to separate benign from malignant heat anomalies, which is one of the main practical reasons it has not replaced structural imaging as a standalone screening modality \cite{vishnu2023review}.
+Thermography reads temperature asymmetries and vascular heat signatures, and these reflect the underlying metabolic and angiogenic changes that come with malignancy \cite{head1979infrared, ng2009breast}. The recent wave of work in machine learning and neural networks has changed what thermographic imaging can do in practice by allowing automated feature extraction from thermal patterns that no hand crafted feature would reliably pick up \cite{pereira2020infrared, el2021machine}. But thermography alone is often not specific enough to separate benign heat anomalies from malignant ones. That is the main practical reason it has not replaced structural imaging as a standalone screening modality \cite{vishnu2023review}.
 
 Mammography, in contrast, gives high resolution anatomical and structural detail, and it picks up microcalcifications and soft tissue densities that thermography simply cannot visualize. Mammographic interpretation nevertheless suffers in dense breasts, where the surrounding fibroglandular tissue can obscure lesions and drive false negatives with reduced sensitivity in younger populations \cite{boyd2007mammographic, destounis2021supplemental}. These complementary strengths and weaknesses are exactly what motivates multimodal fusion of thermography and mammography \cite{mostafa2022multi, khan2023hybrid}.
 
-Clinical adoption of any such model still needs one more thing on top of raw accuracy, and that is explainability of the individual decisions produced by the pipeline. Radiologists will not, and arguably should not, trust a black box that emits a probability score with no reasoning attached to it. Post hoc interpretability tools such as SHAP have become important precisely because they identify which features (or which regions of a scan) actually drove a given prediction, and this is a prerequisite both for informed clinical disagreement with the model and for the kind of regulatory audit trails that any real deployment will demand.
+Clinical adoption of any such model needs one more thing on top of raw accuracy. Explainability of individual decisions produced by the pipeline. Radiologists will not, and arguably should not, trust a black box that emits a probability score with nothing attached to it. Post hoc tools like SHAP matter here. They identify which features or which scan regions actually drove a particular prediction and that is what allows informed clinical disagreement with the model and the sort of regulatory audit trail any real deployment ends up needing.
 
 The present study develops a multimodal analysis framework that pulls features from thermography and mammography for early breast cancer detection. The thermographic branch uses the Visual DMR\textendash IR dataset \cite{Moreira2014VisualDMR, Silva2018DMRIR}, with quadrant wise segmentation and temperature normalization to capture localized vascular and metabolic patterns, while the mammographic branch uses the CBIS\textendash DDSM dataset \cite{Lee2017CBISDDSM}, from which structural features are extracted through deep convolutional encoders. Both modality streams are then mapped into a shared latent representation, and their joint discriminative behaviour is examined in order to understand how structural and physiological imaging complement each other for breast abnormality classification.
 
-The emphasis of the paper, to be clear, is not on shipping a complete clinical CAD system for direct deployment; it is on understanding the synergistic diagnostic value of combining these two modalities inside the specific context of thermal biology, and the findings suggest that thermography does carry biologically relevant temperature signatures that complement structural mammographic features once they are integrated through latent level multimodal fusion.
+The point of the paper, to be clear, is not to ship a clinical CAD system ready for direct deployment. The point is to understand the synergistic diagnostic value of combining these two modalities inside the specific setting of thermal biology, and what the experiments end up showing is that thermography does carry biologically relevant temperature signatures which complement structural mammographic features once the two are pushed together through a latent level fusion step.
 
 \section{Literature Review}
 
@@ -124,7 +124,7 @@ All mammograms were converted from 16 bit grayscale to 8 bit, normalized to the 
 
 The thermographic data were obtained from the Visual DMR\textendash IR dataset \cite{Moreira2014VisualDMR, Silva2018DMRIR}. It consists of 200 participants imaged under standardized ambient conditions (20 to 22 degrees Celsius, 40 to 60 percent humidity). Each subject was imaged using a FLIR A320 infrared camera capturing frontal and oblique views of both breasts. Each thermogram is a temperature matrix $T(x,y)$ corresponding to surface thermal emission in Kelvin. Each is categorized as \textit{healthy}, \textit{benign}, or \textit{malignant} based on biopsy confirmed outcomes. Representative samples from both imaging modalities are shown in Fig.~\ref{fig:dataset_samples}. The thermographic images illustrate differences in thermal distribution patterns, while the mammographic images demonstrate structural variations associated with benign and malignant breast abnormalities.
 
-\paragraph{Sampling rationale} A note on data volume is in order. Both datasets ship with more raw material than we actually use here. CBIS\textendash DDSM offers thousands of full mammograms and their ROI crops; we sampled a balanced subset of 2{,}620 ROI images so as to match approximately what the DMR\textendash IR side could support, and so as to keep the two class distributions comparable across modalities. On the thermography side, DMR\textendash IR has been recorded from 200 subjects, and we sampled frontal and oblique frames from a subset of these to keep acquisition geometry consistent. The choice to sample, rather than run every available image, was driven by two things. First, we wanted class balance across the two datasets so that the latent alignment step would not learn a spurious modality prior. Second, using the full corpora at their native size would have shifted the emphasis away from the fusion mechanism itself, which is the actual object of study here.
+\paragraph{Sampling rationale} A note on data volume is in order. Both datasets ship with more raw material than we actually use here. CBIS\textendash DDSM offers thousands of full mammograms and their ROI crops. We sampled a balanced subset of 2{,}620 ROI images to match roughly what the DMR\textendash IR side could support and to keep the two class distributions comparable across modalities. On the thermography side, DMR\textendash IR is recorded from 200 subjects. We sampled frontal and oblique frames from a subset of these to keep acquisition geometry consistent. Why sample rather than use every available image. Two reasons. Class balance across the two datasets matters because otherwise the latent alignment step would learn a spurious modality prior, and using the full corpora at their native size would have shifted the emphasis of the study away from the fusion mechanism itself which is the actual object of the paper.
 
 To enable multimodal analysis, mammographic and thermographic samples were aligned at the class level based on diagnostic category labels rather than direct patient wise correspondence, since the CBIS\textendash DDSM and Visual DMR\textendash IR datasets come from independent cohorts. The datasets were partitioned independently into training, validation and testing splits using a 70 / 15 / 15 percent ratio while preserving class balance across modalities. For the binary classification setup, DMR\textendash IR healthy and benign cases were grouped into the benign class, so that both modalities carry the same two label semantics: benign and malignant.
 
@@ -132,8 +132,8 @@ To enable multimodal analysis, mammographic and thermographic samples were align
 
 % ----------------------------------------------------------
 \subsection{Preprocessing Pipeline}
-Fig.~\ref{fig:framework} illustrates the complete workflow of the proposed multimodal thermo mammographic framework, including preprocessing, feature extraction, latent alignment, fusion, classification and explainability stages.
-The preprocessing phase ensures modality specific radiometric consistency and prepares both image streams for deep feature embedding. For a given mammogram $I_m(x,y)$ and thermogram $I_t(x,y)$, the overall transformation is formalized as:
+Fig.~\ref{fig:framework} shows the end to end workflow of the proposed thermo mammographic pipeline running through preprocessing, feature extraction, latent alignment, fusion, classification and the SHAP explainability layer stacked on top.
+The preprocessing stage does two jobs at once. Radiometric consistency within each modality. Preparation of the tensors for downstream deep feature embedding. For a given mammogram $I_m(x,y)$ and thermogram $I_t(x,y)$ the overall transformation reads:
 \begin{equation}
 \mathcal{P} = \{P_M(I_m), P_T(I_t)\} \rightarrow \{I_m', I_t'\}
 \label{eq:preproc_set}
@@ -152,7 +152,7 @@ The mammographic preprocessing routine begins by reading raw DICOM or digital ma
     \label{eq:mammo_norm_code}
     \end{equation}
     where $\mu_m$ and $\sigma_m$ denote the mean and standard deviation of pixel intensities respectively.
-    \item \textbf{Dynamic Range Scaling:} Normalized values are linearly rescaled to $[0,255]$ so as to preserve the image's dynamic range:
+    \item \textbf{Dynamic Range Scaling:} Normalized values are linearly rescaled to $[0,255]$ to preserve the image's dynamic range:
     \begin{equation}
     I_m''(x,y) = 255 \times \frac{I_m'(x,y) - \min(I_m')}{\max(I_m') - \min(I_m')}
     \label{eq:mammo_rescale}
@@ -167,11 +167,11 @@ The mammographic preprocessing routine begins by reading raw DICOM or digital ma
     \label{fig:framework}
 \end{figure*}
 
-The processed image is then passed to the ResNet50 backbone for deep feature embedding. This leverages pretrained convolutional kernels that extract hierarchical structural patterns.
+The processed image is then handed to the ResNet50 backbone for deep feature embedding. The pretrained convolutional stack picks up the hierarchical structural patterns from there.
 
 \subsubsection{Thermogram Preprocessing (MobileNetV2 Pipeline)}
 
-Thermal imaging needs specialized handling because of varying emissivity and thermal contrast. The preprocessing here ensures consistent temperature scaling and noise suppression prior to deep encoding.
+Thermal imaging needs specialized handling because of varying emissivity and thermal contrast. The preprocessing routine here pins the temperature scaling down and knocks out sensor noise before anything goes into the deep encoder.
 
 \begin{enumerate}
     \item \textbf{Input Normalization:} Raw thermal maps are converted from absolute temperature matrices to 8 bit grayscale intensity maps. Normalization is performed as:
@@ -179,9 +179,9 @@ Thermal imaging needs specialized handling because of varying emissivity and the
     T'(x,y) = \frac{T(x,y) - \min(T)}{\max(T) - \min(T)} \times 255
     \label{eq:temp_norm_code}
     \end{equation}
-    This transformation ensures uniform pixel intensity scaling across subjects.
+    This transformation puts pixel intensities on a uniform scale across subjects.
     \item \textbf{Noise Suppression:} Gaussian blur with kernel size $(3\times3)$ removes sensor noise and thermal inconsistencies without degrading vascular features.
-    \item \textbf{Segmentation:} A binary mask is generated so as to isolate the breast region based on intensity thresholding:
+    \item \textbf{Segmentation:} A binary mask is generated to isolate the breast region based on intensity thresholding:
     \begin{equation}
     M_t(x,y) =
     \begin{cases}
@@ -194,19 +194,19 @@ Thermal imaging needs specialized handling because of varying emissivity and the
     \item \textbf{Resizing and Channel Duplication:} Each thermogram is resized to $224\times224$ pixels and converted to a three channel format so that it becomes compatible with the deep network downstream \cite{Sandler2018MobileNetV2}.
 \end{enumerate}
 
-Both preprocessing pipelines ensure that mammographic and thermographic tensors are normalized, spatially consistent and radiometrically calibrated for deep learning based feature extraction.
+Both preprocessing pipelines leave the mammographic and thermographic tensors normalised. Spatially consistent. Radiometrically calibrated. That is the input contract the downstream deep feature extraction stage assumes.
 
 Data augmentation was applied during training to keep the model from overfitting the modest cohort size. The transforms used were the standard set for medical imagery random horizontal flipping, rotations bounded to $\pm 10^\circ$, small zoom perturbations and slight intensity jitter. Nothing exotic. The point is not to fabricate anatomy but to simulate the small variations in patient positioning, camera calibration and exposure that a real deployment pipeline would see, so that the classifier stops keying on artefacts that happen to be constant across the training set.
 % ----------------------------------------------------------
 \subsection{Feature Extraction Framework}
 
-Feature extraction employs convolutional backbones pretrained on ImageNet, then fine tuned so as to capture domain specific representations. Mammography and thermography branches operate independently before multimodal fusion.
+Feature extraction runs through convolutional backbones pretrained on ImageNet and then fine tuned for the domain. Mammography and thermography branches run independently up until the fusion step.
 
 \paragraph{Why ResNet50 for mammography and MobileNetV2 for thermography.} The two backbones were not chosen at random. Mammograms carry rich high frequency structural information: microcalcification clusters, spiculations, tissue density gradients. Residual connections in ResNet50 let very deep filter stacks propagate gradients cleanly, which is exactly what one wants for these fine grained structural cues. The 2048 dimensional embedding it produces is expressive enough to encode subtle structural anomalies without collapsing them into a shorter code. Thermograms, on the other hand, are lower in spatial detail, noisier at the sensor level, and the DMR\textendash IR corpus is much smaller than a typical natural image dataset. Deep heavy backbones tend to overfit here. MobileNetV2, with its inverted residuals and depthwise separable convolutions, is a much better fit in this regime. Its compact 1280 dimensional embedding is well suited to smaller data volumes and captures the coarser vascular and metabolic asymmetries that the thermal signal actually carries. In short: ResNet50 gives us depth where depth pays off; MobileNetV2 gives us compactness where compactness is a defence against overfitting.
 
 \subsubsection{Mammographic Feature Encoding}
 
-Each preprocessed mammogram $I_m'''$ is fed into the ResNet50 convolutional backbone \cite{He2016ResNet}. The final fully connected layer is removed, and global average pooling is applied so as to yield a compact, high level feature representation:
+Each preprocessed mammogram $I_m'''$ is fed into the ResNet50 convolutional backbone \cite{He2016ResNet}. The final fully connected layer is removed and global average pooling is applied, giving a compact high level feature representation:
 \begin{equation}
 f_M = \phi_M(I_m'''; \theta_M)
 \label{eq:resnet}
@@ -225,7 +225,7 @@ where $\phi_T$ represents the thermographic encoder and $\theta_T$ are pretraine
 % ----------------------------------------------------------
 \subsection{Multimodal Feature Fusion and Classification}
 
-Once modality specific feature vectors $f_M$ and $f_T$ are in hand, they are concatenated at the feature level so as to form a unified multimodal representation:
+Once modality specific feature vectors $f_M$ and $f_T$ are in hand they are concatenated at the feature level to form a unified multimodal representation:
 \begin{equation}
 \mathbf{F}_{fusion} = [f_M \Vert f_T]
 \label{eq:concat}
@@ -259,7 +259,7 @@ Post hoc interpretability is achieved using SHAP (SHapley Additive exPlanations)
 f(\mathbf{x}) = f(\mathbf{x'}) + \sum_{i=1}^{n}\phi_i
 \label{eq:shap_code}
 \end{equation}
-where $\phi_i$ represents the marginal contribution of feature $x_i$ to the prediction. SHAP values were computed for both modalities and mapped so as to visualize how individual features (for example lesion asymmetry, temperature gradient) influenced the malignancy prediction. This makes the decision process transparent, which is important for interpretable medical decision support systems.
+where $\phi_i$ represents the marginal contribution of feature $x_i$ to the prediction. SHAP values were computed for both modalities and mapped so the individual features (lesion asymmetry, temperature gradient and so on) could be tied back to the malignancy prediction they actually pushed. Decisions become inspectable at the feature level. That inspection surface is what medical decision support use requires in the first place.
 
 \begin{algorithm}[H]
 \caption{Multimodal Feature Extraction and Fusion for Breast Cancer Classification}
@@ -376,7 +376,7 @@ Wei et al. \cite{Wei2025} & Multimodal (US + text) & Private cohort & 90.8 & Ben
 \end{figure*}
 \subsection{Ablation Study and Comparative Analysis}
 
-To quantify the contribution of individual components of the proposed framework, an ablation study was carried out. It systematically evaluated unimodal baselines, multimodal fusion without latent alignment, and the full proposed model. As shown in Table~\ref{tab:comparison}, multimodal fusion consistently outperforms unimodal approaches. This confirms the complementary nature of thermographic and mammographic information for the binary benign versus malignant task. The mammography only branch reaches 89.4 percent accuracy and PR AUC 0.941. The thermography only branch trails at 86.2 percent accuracy and PR AUC 0.912. Naive concatenation without alignment pushes accuracy to 91.8 percent. Adding the latent alignment step lifts it further to 94.5 percent, with PR AUC 0.991.
+To quantify the contribution of individual components of the proposed framework, an ablation study was carried out. It systematically evaluated unimodal baselines, multimodal fusion without latent alignment, and the full proposed model. As shown in Table~\ref{tab:comparison}, multimodal fusion consistently outperforms unimodal approaches. What comes out of the table is exactly the pattern one would predict if the two modalities are carrying complementary information for the binary benign versus malignant call. The mammography only branch reaches 89.4 percent accuracy and PR AUC 0.941. The thermography only branch trails at 86.2 percent accuracy and PR AUC 0.912. Naive concatenation without alignment pushes accuracy to 91.8 percent. Adding the latent alignment step lifts it further to 94.5 percent, with PR AUC 0.991.
 
 Adding the latent alignment step is where the gain shows up cleanly. Fusion without alignment already helps, but the alignment step lifts accuracy another 2.7 percent, and the effect is far from noise. What matters here is that the alignment is pushing the two modalities into a shared coordinate system rather than leaving them as disjoint feature streams which the classifier would otherwise have to reconcile on its own. The robustness sweep tells a similar story. Under injected Gaussian noise, blur and low contrast perturbations, the aligned fusion model degrades by only a few percentage points, unlike the unaligned baseline which drops much more sharply, so the alignment is not just an accuracy trick it also stabilises the representation.
 
@@ -410,9 +410,9 @@ Once the alignment training converges, the two latent distributions look conside
 \end{figure*}
 
 
-Once latent alignment converged, the outputs of both encoders were concatenated so as to form a unified multimodal embedding of 256 dimensions. A lightweight fully connected classifier was trained on these fused representations for binary breast cancer classification (benign versus malignant).
+Once latent alignment converged the outputs of both encoders were concatenated into a single 256 dimensional multimodal embedding. On top of that embedding sits a lightweight fully connected classifier trained for the binary benign versus malignant call.
 
-As shown in Fig.~\ref{fig:fusion_curves}, the fusion model shows smooth convergence across training and validation phases. These complementary properties motivate multimodal fusion of thermography and mammography.
+Fig.~\ref{fig:fusion_curves} shows how the fusion model converges. Training and validation both settle without the sort of divergence that typically flags overfitting. The behaviour is not surprising given that the two feature streams carry complementary rather than redundant signal which is exactly the property the multimodal setup was built to exploit.
 
 \subsection{Precision Recall Analysis}
 
@@ -463,7 +463,7 @@ The three dimensional PCA projection in Fig.~\ref{fig:pca3d} corroborates the sa
 \subsection{Summary of Findings}
 Bringing the experimental results together the multimodal latent fusion pipeline meets the objectives that were laid out at the start of this study. Thermographic and mammographic information are combined at the latent representation level rather than at raw pixel level and the joint classifier reaches 94.5 percent test accuracy with a PR AUC of 0.991 on the binary benign versus malignant task. Robustness under Gaussian input noise stands at 93.1 percent, only a 1.4 percentage point drop from the clean baseline. Latent space projections through t\textendash SNE and PCA confirm class wise separability, while the SHAP analysis provides per feature attribution over the fused latent representation.
 
-Read together these observations argue that latent level multimodal fusion is a workable and reasonably interpretable design choice for breast cancer analysis within a research oriented diagnostic setting.
+Read together these observations argue that latent level multimodal fusion is a workable and reasonably interpretable design for research grade breast cancer analysis. Not a deployment claim. A design claim.
 
 
 \section{Conclusion and Future Work}
@@ -473,7 +473,7 @@ Empirically the pipeline holds up under evaluation. The joint held out test set 
 
 Beyond the raw performance numbers the paper leaned on SHAP based post hoc interpretability so that individual predictions could be inspected at the level of latent feature contributions. This is not cosmetic. A radiologist reviewing an automated flag will want to see which fused features drove the model toward its call, not only the probability score attached to that call, and the SHAP scaffolding in this pipeline is what makes that kind of per prediction inspection possible in practice.
 
-The overall message of this study is that latent level multimodal fusion is a workable strategy for automated breast cancer analysis. It offers robustness under input noise, a measurable performance gap over the unimodal baseline in the reported ablation, and a route to per prediction interpretability through SHAP. Three concrete directions look promising for follow on work. First, validation of the pipeline on larger and clinically more diverse cohorts ideally with multi site acquisition variability and biopsy confirmed labels. Second, replacement of the current concatenation based fusion with explicit cross modal attention layers between the two backbones so that mammographic and thermographic evidence can weight each other adaptively rather than uniformly. Third, extension of the pipeline to longitudinal and near real time diagnostic scenarios in which the classifier is expected to update its state as new scans arrive for the same patient over time.
+The takeaway of the study is that latent level multimodal fusion is a workable strategy for automated breast cancer analysis. Robustness under input noise held up in the ablation. There is a measurable performance gap over the unimodal baseline. And per prediction interpretability through SHAP is available at inference time rather than being retrofitted after the fact. Three follow on directions look worth pursuing. Larger, clinically more diverse cohorts come first, ideally with multi site acquisition variability and biopsy confirmed labels, since the current numbers rest on two mid sized public corpora. Explicit cross modal attention between the two backbones is the next step architecturally, so that mammographic and thermographic evidence can weight each other adaptively rather than through the flat concatenation used here. Longitudinal and near real time diagnostic use is the third direction, where the classifier is expected to update its state as fresh scans arrive for the same patient over time rather than making one shot predictions on a static image.
 
 
 \section*{Author Contributions}
