@@ -1,58 +1,84 @@
-\documentclass[lettersize,journal]{IEEEtran}
+\documentclass[a4paper,fleqn]{cas-dc}
+% Elsevier CAS double-column class for Journal of Thermal Biology.
+% If the cas-dc.cls / cas-model2-names.bst files are unavailable locally,
+% download the CAS bundle from https://www.elsevier.com/authors/policies-and-guidelines/latex-instructions
+
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{mathtools}
 \usepackage{array}
-\usepackage[pdftex]{graphicx}
-\usepackage{caption,tabularx,booktabs}
+\usepackage{tabularx}
+\usepackage{booktabs}
 \usepackage{multirow}
 \usepackage{algorithm}
-\usepackage{algpseudocode}  % replaces \usepackage{algorithmic}
-\usepackage{amsmath,amsfonts,amssymb}
-\usepackage{adjustbox}
-\usepackage{subcaption}
-\usepackage[dvipsnames]{xcolor}
-\usepackage[T1]{fontenc}
+\usepackage{algpseudocode}
+\usepackage{subfig}       % provides \subfloat used in figure blocks
+\usepackage{float}        % provides [H] placement for algorithm float
 \usepackage{placeins}
-\usepackage{tikz}
-\usepackage{epstopdf}
-\usepackage{float}
-\usepackage[hyphens]{url}
-\usepackage[pdftex,hidelinks,breaklinks]{hyperref}
-\usepackage{mathtools}
-\usepackage{multicol}
+\usepackage{adjustbox}
 \usepackage[english]{babel}
 
 \graphicspath{{figures/}}
 
 \begin{document}
+\let\WriteBookmarks\relax
+\def\floatpagepagefraction{1}
+\def\textpagefraction{.001}
 
-\title{Learning Shared Latent Representations for Explainable Multimodal Breast Cancer Detection}
+\shorttitle{Latent Multimodal Breast Cancer Detection}
+\shortauthors{Jain et~al.}
 
-\definecolor{affilblue}{RGB}{100,149,237}
-\newcommand{\aff}[1]{\textcolor{affilblue}{\textsuperscript{#1}}}
+\title[mode=title]{Learning Shared Latent Representations for Explainable Multimodal Breast Cancer Detection}
 
-\author{%
-Arnav~Jain\aff{a},
-Vaibhav~Baldeva\aff{a},
-Mansi~Gambhir\aff{b},
-Ruhani~Bhatia\aff{a},
-Somya~Bansal\aff{a},
-Simranjit~Kaur\aff{a,\ast},
-and~Sachin~Kansal\aff{a}\\[4pt]
-\textit{\aff{a}Department of Computer Science and Engineering, Thapar Institute of Engineering and Technology, Patiala, India}\\[1pt]
-\textit{\aff{b}Department of Biotechnology, Thapar Institute of Engineering and Technology, Patiala, India}\\[2pt]
-\texttt{\{ajain5\_be22, vbaldeva\_be22, mgambhir\_btech22, rbhatia\_be22, sbansal1\_be22, simranjit.kaur, sachin.kansal\}@thapar.edu}%
-\thanks{\aff{\ast}Corresponding author: Simranjit Kaur, \texttt{simranjit.kaur@thapar.edu}.}
-}
+\author[1]{Arnav Jain}
+\ead{ajain5\_be22@thapar.edu}
+\credit{Methodology, Software, Investigation, Visualization, Writing -- original draft}
 
-\maketitle
+\author[1]{Vaibhav Baldeva}
+\ead{vbaldeva\_be22@thapar.edu}
+\credit{Methodology, Software, Investigation, Writing -- original draft}
+
+\author[2]{Mansi Gambhir}
+\ead{mgambhir\_btech22@thapar.edu}
+\credit{Data curation, Writing -- original draft}
+
+\author[1]{Ruhani Bhatia}
+\ead{rbhatia\_be22@thapar.edu}
+\credit{Validation, Formal analysis}
+
+\author[1]{Somya Bansal}
+\ead{sbansal1\_be22@thapar.edu}
+\credit{Data curation, Investigation}
+
+\author[1]{Simranjit Kaur}
+\cormark[1]
+\ead{simranjit.kaur@thapar.edu}
+\credit{Supervision, Project administration, Writing -- review and editing}
+
+\author[1]{Sachin Kansal}
+\ead{sachin.kansal@thapar.edu}
+\credit{Supervision, Writing -- review and editing}
+
+\affiliation[1]{organization={Department of Computer Science and Engineering, Thapar Institute of Engineering and Technology},
+                city={Patiala},
+                country={India}}
+
+\affiliation[2]{organization={Department of Biotechnology, Thapar Institute of Engineering and Technology},
+                city={Patiala},
+                country={India}}
+
+\cortext[cor1]{Corresponding author.}
 
 
 \begin{abstract}
 Reliable early screening for breast cancer lies at the intersection of two different imaging problems, and no single acquisition modality resolves both simultaneously. Mammography remains the standard for structural detail, yet its sensitivity drops in dense glandular tissue and its use of ionizing radiation is a documented concern. Thermography captures vascular and metabolic asymmetry without any radiation exposure but on its own lacks specificity for downstream clinical action. The pipeline proposed here fuses features from the two streams at the latent representation level. Not at raw pixel level. Mammograms flow through a pretrained ResNet50 backbone. Thermograms flow through MobileNetV2. Each embedding is projected into a shared 128 dimensional latent space and aligned using a mean squared error objective, and the aligned representations are concatenated for downstream inference. Minimum Redundancy Maximum Relevance (mRMR) selection trims the fused vector before a dense softmax head produces the binary call between benign and malignant. Training uses the CBIS\textendash DDSM mammography dataset and the Visual DMR\textendash IR thermography dataset with 70/15/15 percent train, validation and test splits and preserved class balance. On the held out test set the pipeline reaches 94.5 percent classification accuracy and a Precision Recall Area Under Curve of 0.991. Under Gaussian noise perturbation accuracy only slips to 93.1 percent. Two dimensional t\textendash distributed Stochastic Neighbor Embedding (t\textendash SNE) and Principal Component Analysis (PCA) projections show class separation. SHAP based post hoc analysis then flags the small subset of latent dimensions doing most of the discriminative work.
 \end{abstract}
 
-\begin{IEEEkeywords}
-Breast cancer detection, thermography, mammography, multimodal fusion, latent space alignment, explainable AI, SHAP, CBIS\textendash DDSM, DMR\textendash IR
-\end{IEEEkeywords}
+\begin{keywords}
+Breast cancer detection \sep thermography \sep mammography \sep multimodal fusion \sep latent space alignment \sep explainable AI \sep SHAP \sep CBIS\textendash DDSM \sep DMR\textendash IR
+\end{keywords}
+
+\maketitle
 
 \section{Introduction}
 Breast cancer remains among the leading causes of mortality among women worldwide. Over 2.3 million new cases are reported each year \cite{sung2021global}. Mammography is still the current gold standard for screening \cite{michell2018role, yala2022deep}, but the diagnostic performance is bounded by several factors simultaneously: breast tissue density, exposure to ionizing radiation, and inter observer variability across radiologists. This has driven a growing interest in adjunct imaging modalities \cite{ng2022review, arora2008effectiveness}. Infrared thermography stands out among these. No ionizing dose, and the acquisition procedure itself is rapid and painless. The physiological insight is complementary rather than duplicative of what mammography already captures.
@@ -508,7 +534,7 @@ The datasets used in this study are publicly available. The CBIS\textendash DDSM
 \section*{Acknowledgements}
 The authors would like to thank the Department of Computer Science and Engineering and the Department of Biotechnology at Thapar Institute of Engineering and Technology, Patiala, for the academic support extended during the course of this work.
 
+\bibliographystyle{cas-model2-names}
 \bibliography{refs}
-\bibliographystyle{IEEEtran}
 
 \end{document}
