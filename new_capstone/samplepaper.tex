@@ -27,7 +27,8 @@
 \title{Learning Shared Latent Representations for Explainable Multimodal Breast Cancer Detection}
 
 \definecolor{affilblue}{RGB}{100,149,237}
-\newcommand{\aff}[1]{\textcolor{affilblue}{\textsuperscript{#1}}}
+
+\newcommand{\aff}[1]{{\textsuperscript{\textcolor{affilblue}{#1}}}}
 
 \author{%
 Arnav~Jain\aff{a},
@@ -35,23 +36,22 @@ Vaibhav~Baldeva\aff{a},
 Mansi~Gambhir\aff{b},
 Ruhani~Bhatia\aff{a},
 Somya~Bansal\aff{a},
-Simranjit~Kaur\aff{a,\ast},
+Simranjit~Kaur\aff{a}{\textsuperscript{\textcolor{affilblue}{,*}}},
 and~Sachin~Kansal\aff{a}\\[4pt]
 \textit{\aff{a}Department of Computer Science and Engineering, Thapar Institute of Engineering and Technology, Patiala, India}\\[1pt]
 \textit{\aff{b}Department of Biotechnology, Thapar Institute of Engineering and Technology, Patiala, India}\\[2pt]
-\texttt{\{ajain5\_be22, vbaldeva\_be22, mgambhir\_btech22, rbhatia\_be22, sbansal1\_be22, simranjit.kaur, sachin.kansal\}@thapar.edu}%
-\thanks{\aff{\ast}Corresponding author: Simranjit Kaur, \texttt{simranjit.kaur@thapar.edu}.}
+\thanks{Corresponding author: Simranjit Kaur, \texttt{simranjit.kaur@thapar.edu}.}
 }
 
 \maketitle
 
 
 \begin{abstract}
-Reliable early screening for breast cancer lies at the intersection of two different imaging problems, and no single acquisition modality resolves both simultaneously. Mammography remains the standard for structural detail, yet its sensitivity drops in dense glandular tissue and its use of ionizing radiation is a documented concern. Thermography captures vascular and metabolic asymmetry without any radiation exposure but on its own lacks specificity for downstream clinical action. The pipeline proposed here fuses features from the two streams at the latent representation level. Not at raw pixel level. Mammograms flow through a pretrained ResNet50 backbone. Thermograms flow through MobileNetV2. Each embedding is projected into a shared 128 dimensional latent space and aligned using a mean squared error objective, and the aligned representations are concatenated for downstream inference. Minimum Redundancy Maximum Relevance (mRMR) selection trims the fused vector before a dense softmax head produces the binary call between benign and malignant. Training uses the CBIS\textendash DDSM mammography dataset and the Visual DMR\textendash IR thermography dataset with 70/15/15 percent train, validation and test splits and preserved class balance. On the held out test set the pipeline reaches 94.5 percent classification accuracy and a Precision Recall Area Under Curve of 0.991. Under Gaussian noise perturbation accuracy only slips to 93.1 percent. Two dimensional t\textendash distributed Stochastic Neighbor Embedding (t\textendash SNE) and Principal Component Analysis (PCA) projections show class separation. SHAP based post hoc analysis then flags the small subset of latent dimensions doing most of the discriminative work.
+Reliable early screening of breast cancer requires capturing complementary anatomical and physiological information; however, no single imaging modality can simultaneously provide comprehensive characterization. Mammography remains the standard for structural detail, yet its sensitivity drops in dense glandular tissue and its use of ionizing radiation is a documented concern. Thermography captures vascular and metabolic asymmetry without any radiation exposure but it lacks specificity for downstream clinical action. The proposed pipeline fuses features from the two streams at the latent representation level instead of raw pixel level. Mammograms flow through a pretrained ResNet50 backbone model. Thermograms flow through a lightweight MobileNetV2 model. Each embedding is projected into a shared 128 dimensional latent space and aligned using a mean squared error objective, and the aligned representations are concatenated for downstream inference. Minimum Redundancy Maximum Relevance (mRMR) selection trims the fused vector before a dense softmax head produces the binary call between benign and malignant. Training uses the CBIS\textendash DDSM mammography dataset and the Visual DMR\textendash IR thermography dataset with 70/15/15 percent train, validation and test splits and preserved class balance. On the held out test set the pipeline reaches 94.5 percent classification accuracy and a Precision Recall Area Under Curve of 0.991. Under Gaussian noise perturbation accuracy only slips to 93.1 percent. Two dimensional t\textendash distributed Stochastic Neighbor Embedding (t\textendash SNE) and Principal Component Analysis (PCA) projections show class separation. SHAP based post hoc analysis then flags the small subset of latent dimensions doing most of the discriminative work.
 \end{abstract}
 
 \begin{IEEEkeywords}
-Breast cancer detection, thermography, mammography, multimodal fusion, latent space alignment, explainable AI, SHAP, CBIS\textendash DDSM, DMR\textendash IR
+Breast cancer detection, thermography, mammography, multimodal fusion, latent space alignment, explainable AI, SHAP
 \end{IEEEkeywords}
 
 \section{Introduction}
@@ -507,6 +507,9 @@ The datasets used in this study are publicly available. The CBIS\textendash DDSM
 
 \section*{Acknowledgements}
 The authors would like to thank the Department of Computer Science and Engineering and the Department of Biotechnology at Thapar Institute of Engineering and Technology, Patiala, for the academic support extended during the course of this work.
+
+\section*{Declaration of generative AI in scientific writing}
+During the preparation of this work, the author(s) used ChatGPT tool to assist with writing process. After utilizing this tool/service, the author (s) reviewed and edited the content as necessary and assume full responsibility for the final content of the published article.
 
 \bibliography{refs}
 \bibliographystyle{IEEEtran}
