@@ -69,7 +69,7 @@ The present study develops a multimodal analysis framework for early breast canc
 
 The objective of the present paper is deliberately narrow. It does not propose a clinical computer aided diagnosis system ready for direct deployment. The study instead examines the synergistic diagnostic value of combining these two modalities within the specific setting of thermal biology. The experiments show that thermographic imagery does carry biologically relevant temperature signatures. Those signatures complement structural mammographic features once the two representations are joined at the latent level rather than fused at the raw pixel level.
 
-\section{Literature Review}
+\subsection{Related Work}
 
 Recent advances in breast cancer imaging cluster around three lines: mammography, thermography and multimodal fusion. Work published in the 2024 to 2025 window has particularly emphasised validation across diverse datasets and complementary imaging modalities.
 
@@ -83,7 +83,7 @@ Read as a whole this body of work says a few things. Recent mammography efforts 
 
 
 
-\section{Methodology}
+\section{Methods}
 
 The methodology combines mammographic and thermographic imagery within a single learning pipeline. ResNet50 handles the mammographic feature extraction. MobileNetV2 handles the thermogram side. Downstream of these two backbones everything is standardised, comprising normalisation, fusion, dimensionality reduction and a post hoc explainability layer positioned on the classifier output. In code the pipeline runs as three sequential passes over each subject. Preprocessing and normalisation come first, per modality. Then deep feature extraction through the two backbones. Then multimodal fusion of the resulting feature streams and downstream binary classification over the joint representation.
 % ----------------------------------------------------------
@@ -328,7 +328,7 @@ The ResNet50 encoder generated 2048 dimensional mammographic embeddings, while M
 
 The fused latent representation feeds a lightweight classifier head. A pair of dense layers with dropout in between, then a softmax on the two class output. Training used Adam at learning rate $10^{-4}$ with batch size 32, and both early stopping and validation loss monitoring were kept active throughout training so that the classifier weights being saved were the ones that generalised best rather than the ones that fit the training split tightest.
 
-\section{Results and Analysis}
+\section{Results}
 
 \begin{table*}[h]
 \caption{Comparison of Breast Cancer Detection Performance Across Different Model Variants (Class Labels: Benign versus Malignant).}
@@ -385,11 +385,6 @@ To quantify the contribution of individual components of the proposed framework,
 Adding the latent alignment step is where the gain shows up cleanly. Fusion without alignment already helps, but the alignment step lifts accuracy another 2.7 percent, and the effect is far from noise. What matters here is that the alignment is pushing the two modalities into a shared coordinate system rather than leaving them as disjoint feature streams which the classifier would otherwise have to reconcile on its own. The robustness sweep tells a similar story. Under injected Gaussian noise, blur and low contrast perturbations, the aligned fusion model degrades by only a few percentage points, unlike the unaligned baseline which drops much more sharply, so the alignment is not just an accuracy trick it also stabilises the representation.
 
 Table~\ref{tab:literature_comparison} positions the proposed model against past work on the same CBIS\textendash DDSM and DMR\textendash IR benchmarks. On CBIS\textendash DDSM alone, the strongest unimodal mammography baselines cluster around 86 to 87 percent accuracy \cite{Shen2019DeepLearningMammo, Ragab2019CBISDDSM}. On DMR\textendash IR alone, thermography deep models attain between 85 and 98 percent depending on architecture and label granularity \cite{Jalloul2024, Alzahrani2025, Roslidar2020}. Existing multimodal designs that combine mammographic and thermographic streams report accuracies of 92 to 94 percent \cite{mostafa2022multi, khan2023hybrid}. The proposed latent fusion pipeline achieves 94.5 percent binary accuracy, which is on par with or above these multimodal baselines and considerably above unimodal mammography. The comparison is indicative rather than head to head, since cohort composition and class definitions vary between studies. Nevertheless, the direction of improvement is consistent: augmenting mammography with thermography, and aligning the two representations, yields measurable benefits.
-
-\subsection{Multimodal Latent Space Alignment}
-The two modalities cannot be fused naively. Their feature spaces are shaped differently, one from a mammographic backbone with 2048 dimensional output and one from a thermographic backbone with 1280 dimensional output, and pushing them straight into a shared classifier would leave the classifier doing implicit alignment work on top of the classification task itself. We instead train two small encoder heads whose only job is to project each modality into a common 128 dimensional latent space. A mean squared error alignment loss between paired thermographic and mammographic embeddings drives the two projections together during a dedicated pretraining phase.
-
-Once the alignment training converges, the two latent distributions look considerably more consistent than they did at initialisation and this is what makes the downstream fusion meaningful. The alignment step is also doing the work of reducing modality specific bias. Without it, the classifier tends to lean disproportionately on whichever modality happens to dominate the joint feature vector by magnitude alone.
 
 \subsection{Latent Fusion Classification Performance}
 
@@ -464,13 +459,20 @@ Fig.~\ref{fig:tsne} shows a two dimensional t\textendash SNE projection of the f
 
 The three dimensional PCA projection in Fig.~\ref{fig:pca3d} corroborates the same observation along the principal component axes of the fused latent representation. Class separation is present. The boundary between the two clusters however is not a hard axis aligned partition and instead appears as a smooth transition in principal component space suggesting that the classifier has recovered a continuous disease severity manifold rather than an axis aligned hyperplane between benign and malignant.
 
+\section{Discussion}
+
+\subsection{Multimodal Latent Space Alignment}
+The two modalities cannot be fused naively. Their feature spaces are shaped differently, one from a mammographic backbone with 2048 dimensional output and one from a thermographic backbone with 1280 dimensional output, and pushing them straight into a shared classifier would leave the classifier doing implicit alignment work on top of the classification task itself. We instead train two small encoder heads whose only job is to project each modality into a common 128 dimensional latent space. A mean squared error alignment loss between paired thermographic and mammographic embeddings drives the two projections together during a dedicated pretraining phase.
+
+Once the alignment training converges, the two latent distributions look considerably more consistent than they did at initialisation and this is what makes the downstream fusion meaningful. The alignment step is also doing the work of reducing modality specific bias. Without it, the classifier tends to lean disproportionately on whichever modality happens to dominate the joint feature vector by magnitude alone.
+
 \subsection{Summary of Findings}
 Bringing the experimental results together the multimodal latent fusion pipeline meets the objectives that were laid out at the start of this study. Thermographic and mammographic information are combined at the latent representation level rather than at raw pixel level and the joint classifier reaches 94.5 percent test accuracy with a PR AUC of 0.991 on the binary benign versus malignant task. Robustness under Gaussian input noise stands at 93.1 percent, only a 1.4 percentage point drop from the clean baseline. Latent space projections through t\textendash SNE and PCA confirm class wise separability, while the SHAP analysis provides per feature attribution over the fused latent representation.
 
 Across the four observations above, the picture that emerges is a coherent one. Latent level multimodal fusion is a workable and reasonably interpretable design for research grade breast cancer analysis. The claim advanced here is one of design and analysis, not of clinical deployment.
 
 
-\section{Conclusion and Future Work}
+\section{Conclusion}
 This paper presented a multimodal breast cancer detection pipeline that routes thermographic and mammographic imagery through independent modality specific encoders. Each encoder projects its features into a common 128 dimensional latent space and an alignment objective drives the two projections toward each other in that space so that the corresponding cross modal representations become geometrically comparable at the latent level. The aligned latent embeddings are then concatenated and passed to a binary classifier that discriminates benign from malignant instances.
 
 Empirically the pipeline holds up under evaluation. The joint held out test set drawn from CBIS\textendash DDSM and DMR\textendash IR yields 94.5 percent classification accuracy and a PR AUC of 0.991, and injecting zero mean Gaussian noise into both modality feature streams only reduces accuracy to 93.1 percent. Latent space visualisations under t\textendash SNE and PCA show benign and malignant samples occupying visibly separate regions of the projected space. The pattern across these three observations is consistent. Learned latent codes appear to be organised around disease relevant information rather than modality specific noise or acquisition artefacts.
